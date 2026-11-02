@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Songs of the Year: Zim Edition</title>
+<meta name="description" content="Pick one Zimbabwean song from every year, 1980 to 2025, and see what everyone else picked.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Look: warm cream paper, deep msasa-green ink, brass gold accents, Zimbabwe flag stripe. Fraunces serif for headings, Figtree for reading. */
+:root{--bg:#f5f0e6;--surface:#faf6ee;--line:#d9cfbd;--fg:#163c32;--muted:#4f5c56;--accent:#163c32;--accent-ink:#fbf6ea;--accent-soft:#e3ebe5;--gold:#b88a2c;--brass:#b88a2c;--ok:#163c32;--dock:#163c32;--dock-fg:#f7f1e3;--deco:#d8c9a6;
+--display:"Fraunces",Georgia,"Times New Roman",serif;--body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1f1a;--surface:#15291f;--line:#2c4238;--fg:#efe7d4;--muted:#b9b2a0;--accent:#d9ae55;--accent-ink:#13241d;--accent-soft:#22362c;--gold:#d9ae55;--brass:#d9ae55;--ok:#d9ae55;--dock:#0a1712;--dock-fg:#f2ead8;--deco:#2a3d33;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1f1a;--surface:#15291f;--line:#2c4238;--fg:#efe7d4;--muted:#b9b2a0;--accent:#d9ae55;--accent-ink:#13241d;--accent-soft:#22362c;--gold:#d9ae55;--brass:#d9ae55;--ok:#d9ae55;--dock:#0a1712;--dock-fg:#f2ead8;--deco:#2a3d33;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:18px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:env(safe-area-inset-top,0px) 140px}
+.deco{position:fixed;top:60px;right:-40px;width:min(46vw,560px);height:auto;color:var(--deco);pointer-events:none;z-index:0;opacity:.9}
+.wrap{max-width:1000px;margin:0 auto;position:relative;z-index:1}
+a{color:inherit}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* Top bar */
+.top{display:flex;align-items:center;gap:12px;padding-block:14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.01em;text-decoration:none}
+.brand em{font-style:italic;font-weight:600;color:var(--gold)}
+.count{margin-left:auto;font-family:var(--display);font-size:18px;color:var(--fg);font-variant-numeric:tabular-nums}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:12px 22px;border-radius:6px;
+  font-family:var(--display);font-weight:700;font-size:19px;line-height:1.2;text-decoration:none;cursor:pointer;border:2px solid var(--fg);background:var(--fg);color:var(--bg);
+  transition:transform .15s ease,background-color .15s ease,box-shadow .15s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(22,60,50,.18)}
+.btn:active{transform:none;box-shadow:none}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--fg)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:var(--accent-ink)}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.35;pointer-events:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.linkish{background:none;border:0;padding:6px 0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:17px}
+
+/* Start page */
+.start{min-height:calc(100svh - 220px);display:grid;align-content:center;justify-items:start;gap:18px;padding-block:40px}
+.start h1.title{font-size:clamp(52px,11vw,124px)}
+.start .lede{font-size:clamp(19px,2.4vw,24px)}
+.btn.big{min-height:68px;padding:16px 44px;font-size:24px;border-radius:8px;margin-top:8px}
+.start .alt{font-size:17px;color:var(--muted)}
+.disclaimer{font-size:15px;line-height:1.5;color:var(--muted);max-width:60ch;margin:0;padding:10px 14px;border-left:3px solid var(--gold);background:var(--surface);border-radius:0 6px 6px 0}
+.pager+.disclaimer{margin-top:18px}
+
+/* Home */
+.stripe{display:flex;height:7px;border-radius:4px;overflow:hidden;width:250px}.stripe i{flex:1}
+.stripe i:nth-child(1){background:#1f7a4c}.stripe i:nth-child(2){background:#c9982b}.stripe i:nth-child(3){background:#c0392b}.stripe i:nth-child(4){background:#1b1b1b}
+.hero{padding-block:36px 10px;display:grid;gap:14px}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:6px 0 0}
+h1.title{font-family:var(--display);font-weight:700;font-size:clamp(42px,8.4vw,92px);line-height:.98;letter-spacing:-.025em;margin:0;text-wrap:balance}
+h1.title em{font-style:italic;font-weight:600;color:var(--gold)}
+.lede{max-width:56ch;color:var(--fg);margin:0;font-size:19px}
+.howto{margin:0;padding-left:1.2em;color:var(--muted);font-size:17px;display:grid;gap:2px}
+.decade{margin-top:30px;display:grid;gap:12px}
+.decade h2{font-family:var(--display);font-size:14px;margin:0;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.ygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.yt{display:grid;gap:2px;padding:12px 16px;border:1.5px solid var(--line);border-radius:6px;background:var(--surface);text-decoration:none;min-width:0;transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+.yt:hover{border-color:var(--fg);transform:translateY(-2px);box-shadow:0 6px 16px rgba(22,60,50,.12)}
+.yt b{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.1}
+.yt span{font-size:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yt.done{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.yt.done span{color:var(--accent-ink);opacity:.9}
+
+/* Year page */
+.yhead{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-block:22px 20px;flex-wrap:wrap}
+.yyear{font-family:var(--display);font-weight:700;font-size:clamp(56px,10vw,96px);line-height:1;letter-spacing:-.03em;margin:0}
+.ybtns{display:flex;gap:10px}
+.ybtn[aria-disabled="true"]{opacity:.3;pointer-events:none}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.card{display:grid;grid-template-rows:auto 1fr;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden;animation:fadein .6s ease both;transition:border-color .15s ease,box-shadow .2s ease}
+.card:hover{border-color:var(--fg)}
+.card.current{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.art{position:relative;display:block;width:100%;aspect-ratio:1;padding:0;border:0;background:#000;cursor:pointer;overflow:hidden}
+.art .pic{position:absolute;inset:0}
+.art img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.35);transition:filter .5s ease}
+.disc{width:100%;height:100%;display:grid;place-items:center;background:radial-gradient(circle,var(--gold) 0 13%,#111 13.5% 15%,#1e2b25 15.5% 30%,#121a16 30.5% 45%,#1e2b25 45.5% 60%,#121a16 60.5% 100%);transition:filter .5s ease}
+.disc b{font-family:var(--display);font-weight:700;color:#13241d;font-size:20px}
+.playic{position:absolute;left:12px;bottom:12px;width:48px;height:48px;border-radius:50%;background:var(--surface);color:var(--fg);display:grid;place-items:center;font-size:18px;padding-left:3px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.card.current .playic{background:var(--gold);color:#13241d}
+.meta{padding:14px 14px 16px;display:grid;gap:4px;align-content:start}
+.meta .t{font-family:var(--display);font-size:21px;font-weight:700;line-height:1.2;margin:0;overflow-wrap:break-word;transition:filter .5s ease}
+.meta .a{font-size:16px;color:var(--muted);margin:0;transition:filter .5s ease}
+.meta .pc{font-size:15px;color:var(--gold);font-weight:600;margin:0}
+.save{margin-top:10px;min-height:50px;width:100%;border-radius:6px;border:2px solid var(--fg);background:transparent;color:var(--fg);font-family:var(--display);font-weight:700;font-size:18px;cursor:pointer;transition:transform .15s ease,background-color .15s ease}
+.save:hover{transform:translateY(-1px)}
+.save.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.card.blurred .art img,.card.blurred .disc{filter:blur(16px)}
+.card.blurred .meta .t,.card.blurred .meta .a,.card.blurred .meta .pc{filter:blur(8px);user-select:none}
+.card.blurred .save{visibility:hidden}
+.tapnote{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(22,60,50,.85);color:#fbf6ea;font-weight:700;font-size:16px;padding:8px 14px;border-radius:999px;white-space:nowrap}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Now-playing bar along the bottom */
+.mini{position:fixed;left:0;right:0;bottom:0;z-index:15;display:none;background:var(--dock);color:var(--dock-fg);box-shadow:0 -8px 30px rgba(0,0,0,.25);
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.mini.open{display:block}
+.minner{max-width:1000px;margin:0 auto;display:flex;gap:16px;align-items:center}
+.mvid{width:168px;flex:none}
+.mvid .ythost{aspect-ratio:16/9;width:100%;border-radius:4px;overflow:hidden;background:#000;transition:filter .4s ease}
+.mvid .ythost iframe,.mvid .ythost>div{width:100%;height:100%;display:block;border:0}
+.mvid .sphost iframe{width:100%;height:80px;border:0;border-radius:8px;display:block}
+.mvid .nomedia{aspect-ratio:16/9;border-radius:4px;border:1px dashed rgba(255,255,255,.4);display:grid;place-content:center;text-align:center;font-size:15px;opacity:.85}
+.mini.blurred .ythost,.mini.blurred .sphost{filter:blur(14px)}
+.minfo{min-width:0;flex:1;display:grid;gap:1px}
+.minfo .my{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--gold)}
+.minfo .mt{font-family:var(--display);font-weight:700;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.minfo .ma{font-size:16px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbtns{display:flex;gap:10px;align-items:center}
+.mbtn{font:inherit;font-weight:700;font-size:18px;min-height:48px;min-width:48px;padding:0 12px;border-radius:999px;border:2px solid rgba(247,241,227,.55);background:transparent;color:var(--dock-fg);cursor:pointer;display:grid;place-items:center}
+.mbtn:hover{border-color:var(--dock-fg)}
+.mbtn.primary{background:var(--dock-fg);color:var(--dock);border-color:var(--dock-fg)}
+.mbtn.play{min-width:58px;min-height:58px;font-size:20px}
+.mseek{display:flex;align-items:center;gap:10px;margin-top:6px}
+.mtime{font-size:13px;font-variant-numeric:tabular-nums;opacity:.85;min-width:36px}
+.mseek input[type=range]{flex:1;min-width:0;height:28px;accent-color:var(--gold);cursor:pointer;background:transparent}
+.mbtn.mute{background:var(--gold);border-color:var(--gold);color:#13241d}
+.hide{display:none!important}
+
+.pager{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:30px;padding-top:20px;border-top:1px solid var(--line)}
+.share{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.status{font-size:16px;color:var(--muted)}
+
+/* My picks */
+.capsule{margin-top:44px;border:1.5px solid var(--fg);border-radius:8px;padding:22px;display:grid;gap:14px;background:var(--surface)}
+.capsule h2{font-family:var(--display);font-size:32px;margin:0}
+.capsule h3{font-family:var(--display);font-size:21px;margin:8px 0 0}
+.note{font-size:17px;color:var(--muted);max-width:65ch;margin:0}
+textarea.sharebox{width:100%;min-height:180px;font:inherit;font-size:16px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:10px}
+
+/* Bottom player (used for "Play my picks") */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--dock);color:var(--dock-fg);
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  transform:translateY(110%);visibility:hidden;transition:transform .3s ease,visibility .3s}
+.dock.open{transform:none;visibility:visible}
+.dock-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.dvid{width:168px;aspect-ratio:16/9;border-radius:4px;overflow:hidden;background:#000}
+.dvid iframe,.dvid>div{width:100%;height:100%;display:block;border:0}
+.dnow{min-width:0;display:grid;gap:2px}
+.dnow .t{font-family:var(--display);font-weight:700;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dnow .a{font-size:16px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock .btn{border-color:var(--dock-fg);background:var(--dock-fg);color:var(--dock);min-height:48px;padding:10px 16px;border-radius:999px}
+.dock .btn.ghost{background:transparent;color:var(--dock-fg)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:900px){.deco{opacity:.45;width:70vw;right:-30vw}}
+@media (max-width:760px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .meta{padding:10px 10px 12px}
+  .meta .t{font-size:18px}
+  .meta .a{font-size:15px}
+  .save{font-size:16px;min-height:46px}
+  .playic{width:40px;height:40px;left:8px;bottom:8px;font-size:15px}
+  .yhead{padding-block:16px 14px}
+  .brand{font-size:20px}.count{font-size:15px}
+  .pager>*{flex:1 1 auto}
+  .ygrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .minner{flex-wrap:wrap;gap:10px}
+  .mvid{width:120px}
+  .minfo .mt{font-size:17px}
+  .mbtns{width:100%;justify-content:flex-end}
+  body{padding-bottom:190px}
+  .dock-inner{grid-template-columns:1fr auto}
+  .dvid{grid-column:1 / -1;width:100%;max-height:30vh}
+  body{padding-bottom:max(190px,calc(30vh + 130px))}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg class="deco" viewBox="0 0 580 700" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="22" opacity=".55"><polyline points="460,-20 490,30 460,80 490,130 460,180 490,230 460,280 490,330 460,380 490,430 460,480 490,530 460,580 490,630 460,680" /><polyline points="515,-20 545,30 515,80 545,130 515,180 545,230 515,280 545,330 515,380 545,430 515,480 545,530 515,580 545,630 515,680" /></g><g transform="rotate(-16 230 340)"><rect x="40" y="60" width="380" height="520" rx="70"/><rect x="56" y="76" width="348" height="488" rx="58" opacity=".6"/><rect x="70" y="120" width="14" height="154" rx="7"/><rect x="94" y="120" width="14" height="170" rx="7"/><rect x="118" y="120" width="14" height="186" rx="7"/><rect x="142" y="120" width="14" height="202" rx="7"/><rect x="166" y="120" width="14" height="218" rx="7"/><rect x="190" y="120" width="14" height="234" rx="7"/><rect x="214" y="120" width="14" height="250" rx="7"/><rect x="238" y="120" width="14" height="234" rx="7"/><rect x="262" y="120" width="14" height="218" rx="7"/><rect x="286" y="120" width="14" height="202" rx="7"/><rect x="310" y="120" width="14" height="186" rx="7"/><rect x="334" y="120" width="14" height="170" rx="7"/><rect x="358" y="120" width="14" height="154" rx="7"/><rect x="46" y="104" width="368" height="22" rx="8"/><rect x="60" y="150" width="340" height="14" rx="7"/><circle cx="230" cy="500" r="46"/></g></svg>
+<div class="wrap">
+  <nav class="top" aria-label="Site">
+    <a class="brand" href="#">Songs of the Year: <em>Zim Edition</em></a>
+    <span class="count" id="count"></span>
+  </nav>
+  <main id="view"></main>
+</div>
+<div class="sr" id="announce" aria-live="polite"></div>
+
+<div class="mini" id="mini" aria-label="Music player">
+  <div class="minner">
+  <div class="mvid"><div class="ythost" id="mYt"></div><div class="sphost hide" id="mSp"></div><div class="nomedia hide" id="mNo"></div></div>
+  <div class="minfo"><span class="my" id="mY"></span><span class="mt" id="mT"></span><span class="ma" id="mA"></span>
+    <div class="mseek" id="mSeekRow"><span class="mtime" id="mCur">0:00</span><input type="range" id="mSeek" min="0" max="100" step="1" value="0" aria-label="Song position"><span class="mtime" id="mDur">0:00</span></div>
+  </div>
+  <div class="mbtns">
+    <button type="button" class="mbtn" id="mPrev" aria-label="Previous song">◀◀</button>
+    <button type="button" class="mbtn primary play" id="mPlay" aria-label="Pause">❚❚</button>
+    <button type="button" class="mbtn" id="mNext" aria-label="Next song">▶▶</button>
+    <button type="button" class="mbtn" id="mMute">🔊</button>
+    <button type="button" class="mbtn" id="mClose" aria-label="Close player">✕</button>
+  </div>
+  </div>
+</div>
+
+<div class="dock" id="dock" aria-label="Player">
+  <div class="dock-inner">
+    <div class="dvid" id="dvid"></div>
+    <div class="dnow"><span class="t" id="dT">—</span><span class="a" id="dA"></span></div>
+    <div class="row">
+      <button type="button" id="dNext" class="btn ghost">Next ▸</button>
+      <button type="button" id="dClose" class="btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const RAW = [[1980,[["Gremma Wepamoyo","Devera Ngwena Jazz Band","lslBXsAFK3A"],["Zimbabwe","Oliver Mtukudzi","qxlNCXEffIM"],["Mazongonyedze","Oliver Mtukudzi","XPvZNlhNRnA"],["Makorokoto","Four Brothers","cwPrQOZlbak"],["Chipo Chiroorwa","Zexie Manatsa & The Green Arrows","r2QWt6uwFlc"],["Ndipeiwo Zano","Oliver Mtukudzi","4OGpF663PTM"],["Pidigori Waenda","Thomas Mapfumo","dej0YydSB-s"],["Wapenga Nayo Bonus","Patrick Mkwamba & The Four Brothers","UBwgRYn0iY4"],["Katarina","Safirio Madzikatire (Mukadota)","WUWuKdrcvw8"],["Gomo Ramasare","Zig Zag Band","ktAg49F1_vk"]]],[1981,[["Gwindingwi Rine Shumba","Thomas Mapfumo & The Blacks Unlimited","kvdB6mzGcNA"],["Shumba","Thomas Mapfumo","feOyfEeK3LE"],["Barbara","Devera Ngwena Jazz Band","N2mkqqJLJMA"],["Wangu P","Devera Ngwena Jazz Band","Zr_dg2oSonM"],["Makorokoto","Mechanic Manyeruke & The Puritans","WoGTlaRzqFo"],["KwaHunyani","Safirio Madzikatire","ZhDXIwR81kU"],["Nyoka Musango","Thomas Mapfumo","y6xYxWW8rnw"],["Ruva Rangu","The Pied Pipers","vm6MCCVY7f8"],["Mandi","Sungura Boys","sqLoqxYiMMw"],["Vimbiso","Cha Cha Cha Kings","KBW-U70FgOg"]]],[1982,[["Dhora Rangu","Nyami Nyami Sounds","CNHJF1T9vH4","3zD6t8yjQAROJ23yMOOcu2"],["Solo naMutsai","Jonah Moyo & Devera Ngwena Jazz Band","zdit1Z_uO_w"],["Vimbayi","Four Brothers","JGJd7Vz1xh0"],["Tshilamoya","Lovemore Majaivana","1nK8Ipzyf70"],["Nyaradzo","Ngwenya Brothers","f-tZGwRvPmY","2aOSiy49P6RlKeZELCisbb"],["Tanga Wandida","Paul Matavire & Jairos Jiri Band","5dttIgVmFZs"],["Chava Chimurenga","Stella Chiweshe","Cmg1Kxr8MmM"],["Banolila","Solomon Skuza","ltfR9VHIN4E"],["Mugariro","Ephat Mujuru","RWn3rfhlgMQ"],["Umoya Wami","Lovemore Majaivana","W0vD4IwBtqk"]]],[1983,[["Too Cheap","Devera Ngwena Jazz Band","Pq9o03dCr4k"],["Ndangariro","Thomas Mapfumo & The Blacks Unlimited","kz05PQ8I8tQ"],["Mabasa","Thomas Mapfumo & The Blacks Unlimited","YDBjRXRWysM"],["Pasi Pano Pane Zviedzo","Four Brothers","LHVwNUB7ckE"],["MaDube","Devera Ngwena Jazz Band","MEA1hqsEBPo"],["Mwana Wedangwe","Simon Chimbetu & Marxist Brothers","i7K86wPp85M"],["Dzandimomotera","Oliver Mtukudzi","5ANBOVbFMUQ"],["Zvokumayadhi","Devera Ngwena Jazz Band","2-jfSpEOGs0"],["Tina","R&K African Sounds","TFKoUKL3T1M"],["Ndochi","TP Nyekese (Papa Jose)","W0tDOwSpIpw"],["Kuroja Chete","Bhundu Boys","6x1Ol29XJcE"]]],[1984,[["Fundo Inokosha","Nyami Nyami Sounds","PwcuNpqirIo"],["Mabhauwa","Khiama Boys (vocals: System Tazvida)","GOBbsBgU4P0"],["5000 Dollars Kuroora","John Chibadura","0-zarSkvfVs"],["Hatisi Tose","Bhundu Boys","mLIw63taR-k"],["Tozeza Baba","Oliver Mtukudzi","MwsuZQOVl14"],["Chati Huwi","Newman Chipeni","xxdQzpSXLKo"],["Sabhuku","Jonah Sithole","jgBZow4fQuM"],["Kufa Kwangu","Sekuru Gora","3zgGYPV5VWc"],["Baba Munini Francis","Bhundu Boys","ETYfltxKmbY"],["Wenhamo Haaneti","Bhundu Boys","FqKtQDduMWo"]]],[1985,[["Simbimbino","Bhundu Boys","cLDTBM2mxHU"],["Hapana Chisingapere","Sungura Boys","vv6iL2tc7QA"],["Mugarandega","Thomas Mapfumo","nCtM8VJY1r0"],["Kuyaura","Thomas Mapfumo","slzmY-5yLyM"],["True Love","Busi Ncube & Ilanga","dLm05gPflJU"],["Jekesa","Bhundu Boys","lKQgAvbTjao"],["Mudiwa Janet","John Chibadura","Q0nO4t81epY"],["Pamuchato waTobias","Admire Kasenga & Ngosimbi Crew","82bUkJz97KQ"],["Imali","Fanyana Dube","fwCSSPE2Xm0"],["Wangu Ndega","Fortune Muparutsa","R_Q0CHtIaKk"]]],[1986,[["Chitima Kwe","Bhundu Boys","vkgfmX7LkIM"],["MaDhebhura","Thomas Mapfumo & The Blacks Unlimited","gZaEDNhXKeM"],["Rudo Chete","Four Brothers","MK_IEp-InBE"],["Ndichakutiza","Devera Ngwena Jazz Band","khQuaO5OkVM"],["Vhenenzia","Leonard Dembo","hHv7lDjT8wU","4k6LTMBRW94PQivMy96SlU"],["Murambinda","Paul Mpofu & Zambuko Band","KOv1I27E9Ww"],["Rudo Ndimandivhaidze","Biggie Zhanje","pKYwe9446Wk"],["Huya Titambe","Mopo & ZINAWA","Ne-k1EpmXhM"]]],[1987,[["Sharai","Leonard Dembo","EO-y-hoMJ3Y"],["Jit Jive","Bhundu Boys","C1n9-aa94EY"],["Vana (The Children)","Bhundu Boys","gAU2mcY1So0"],["Rugare","Bhundu Boys","iqY3Es0fp9w"],["Chemedzevana","Bhundu Boys","cYnMMzFvqOY"],["Wonderful World","Bhundu Boys","WQTcRI-neI8"],["Manager","Leonard Dembo","fOkqD-11KX0"],["Chiredzi","Devera Ngwena Jazz Band","EPI5Dx1irXU"],["Nyakuzvida","Devera Ngwena Jazz Band","nulCnKhp_Qc"],["Love and Scandals","Solomon Skuza","z89str1CjDg"]]],[1988,[["Rudo Imoto","Marshall Munhumumwe & The Four Brothers","kkf6wxTuqbM"],["Zuva Rekufa Kwangu","John Chibadura","qRYXBM2Fvq8"],["Pombi","Bhundu Boys","Lcuc09mG96I"],["Furuwa","Tairosi Tendaupenyu","2uuObTbFO8A"],["Ruva Remoyo Wangu","Devera Ngwena Jazz Band","m0Rb_h8qNpY"],["Mudiwa Wangu","Nicholas Somerai","LnMp6MR26QA"],["Dzandipedza Mafuta","Simon Chimbetu","WuN_sDplTmI"],["Silver and Gold","Ilanga","rDm4x3BGEkA"],["Tanga Wandibvunza","Paul Matavire","co3Mks-Fj5w"],["Sugar Pie","Oliver Mtukudzi","Q-dhHy1Tx5M"]]],[1989,[["Corruption","Thomas Mapfumo & The Blacks Unlimited","LD9sNKTLVR8"],["Chamunorwa","Thomas Mapfumo & The Blacks Unlimited","PuPY9TSZWBw"],["Moyo Muti","Leonard Zhakata","ptbXQ8w4AZk"],["Pamberi","Bhundu Boys","nugdshFJ--c"],["Chimbira","Bhundu Boys","_4BwDpO5XS0"],["Viva Chinhoyi","Bhundu Boys","4UH_3BSC-LA"],["Tsaona","Pengaudzoke","vfX5VDnXGhQ"],["Chiramwiwa","Gakamoto Jumbo Stars","1-3p634j0tg"],["Musango Ndodzungaira","Kenneth Chigodora","EUqjAzR9s5g"],["Mirira Mangwanani","Shingisai Suluma","gXhEmONmJBQ"]]],[1990,[["Yarira Mhere","Leonard Zhakata","6lfQNIP9Evg"],["Mapurisa","Andy Brown","u39I7xCMGQI"],["Unity","Black Umfolosi","km_XZM7LCe0"],["Nesango","Clive Malunga","7SPuCUqOTH4"],["Nguva Yakaoma","Simon Chimbetu","vF4pl2WeMB4"],["One Way","Simon Chimbetu","vFXnwZJuHtE"],["Ruva Rashe","Leonard Dembo","LpLSvbcX9V4","5ty5m4ILXWabM3QJncuAFa"],["Uthando Khuwe","Isaac Chirwa","WRE2nt0jYAE"],["Character","Prince Tendai Mpfurutsa","ePKNs2EIQH4"],["Zvachanyona","Steve Makoni","ZYFgw8TaxOs"]]],[1991,[["Chitekete","Leonard Dembo & Barura Express","j6WFPS8eRMs"],["Vanhu Vekwedu","Thomas Mapfumo & The Blacks Unlimited","r8JKxq7a_po"],["Shungu Dzemoyo","Leonard Zhakata","WPRLqgORXM8"],["Samatenga","Simon Chimbetu & Dendera Kings","dGRp2QuF-fY"],["Spare Wheel","Simon Chimbetu & Dendera Kings","NqjudX2LFkY"],["Pasi Rapinduka","Simon Chimbetu & Dendera Kings","M_qLGEeZpyA"],["Mabvi neMagokora","Nicholas Zakaria & Khiama Boys","ryzbswILM14"],["Everybody's Free","Rozalla","95_dAQHui94"],["Amai","Guess","mlshx2MrMqw"],["Amai Vangu","George Pada","NR3n_KGUwFw"],["Hondo","Thomas Mapfumo & The Blacks Unlimited","CLJbJbg9S3o"]]],[1992,[["Psss Psss Hallo","Oliver Mtukudzi","F7KzFE1AZBE"],["Rumbidzai Jehova","Oliver Mtukudzi","GYnkNVH8HRw"],["Bhulugwe Lami","Cool Crooners","_DdxaRZy2j8"],["Shosholoza","Don Gumbo & Ilanga","dehe_s_RaK8"],["Meet Me in Zimbabwe","Temba Ndlovu","E7BetNLMDIM"],["Tinovimba","Leonard Dembo","uRPpmuJ8KPI"],["Come to Me (Hapana Mazwi)","Michael Lannas & Talking Drum","YI98ME4XJQw"],["Handitambwe Iyoyo","Susan Mapfumo","fE7MIdNcClI"],["Chabuda Hapana","Bob Nyabinde","kbssV5XSqz8"],["Asila Mali","Edwin Hama","pUVIOzXF9EM"]]],[1993,[["Neria","Oliver Mtukudzi & The Black Spirits","7CkvPkUcmL4"],["Mazano","Leonard Dembo","i49LfWgnSmw"],["Kumusha","Prince Tendai & Mitchel Jambo","sXkBfWM2e4I"],["Pachipamwe","Simon Chimbetu","SOufZCE9Gic"],["Phenduka","Ndolwane Supersounds","5gBtXZTWP4I"],["Senzenina","Albert Nyati","N5u6r2yxxoE"],["Tombofara","Calvin Gudu & Muzi Mangena","-e660tPB_eo"],["Mwari Wangu","John Chibadura","v7LxltcdBzk"],["In My Dreams","Innocent Utsiwegota, Malvin S & Major E","Rx7pyAbmTpQ"]]],[1994,[["Mugove","Leonard Zhakata","lKr7m-ComMc"],["Maruva Enyika","Leonard Zhakata","yVz6GpyRzzA"],["Yeukai","Leonard Zhakata","Xag0ukA2E3I"],["Ndinyarewo","Leonard Zhakata","j_Mi7f1olBs"],["Vanhu Vatema","Thomas Mapfumo & The Blacks Unlimited","AyUMhVefoY0"],["Vaforomani","System Tazvida & Chazezesa Challengers","o6EDy7M8Ups"],["Mushandi Ndimambo","System Tazvida & Chazezesa Challengers","S6dTgvHl--E"],["Pfugama Unamate","Oliver Mtukudzi","1QZaRDvg-8Q"],["Mai","Chiwoniso Maraire","9n9L_yLlcXE"]]],[1995,[["Hupenyu Mutoro","Leonard Zhakata","o667CZRuv1I"],["Nhamo Dzenyika","Leonard Zhakata","o2IZAMAo6ag"],["Unochemei","Leonard Zhakata","6CDMxO6Pfec"],["Shiri Yakangwara","Leonard Dembo","mG3q6azBYmI"],["Utakataka","Tongai Moyo","IwZfiyRHWDk"],["Ivai Navo","Oliver Mtukudzi","jxl-yMFMubo"],["Was My Child","Oliver Mtukudzi","Mcz0PCGci9s"],["Survival","Simon Chimbetu","-YcccrJClDY"],["Kuva Nemari","Nicholas Zakaria & Khiama Boys","h29KRHF_bew"],["Ndoenda Kwambuya","Mbira Dzenharira","dygAqdeRfg8"]]],[1996,[["Nzombe Huru","Leonard Zhakata","BDrf4JWNloA"],["Matsotsi Haagerani","Marko Sibanda","TEBSnMO6mtI"],["Svovi Yangu","Oliver Mtukudzi","IX2PiOaEPEk"],["Gomba Remarara","Leonard Zhakata","7n1hA5_lKr0"],["Hurungudo","Tongai Moyo & Utakataka Express","IoWdyqteX1U"],["Baya WaBaya","John Chibadura","g8RAFb43SK0"],["Nhamo Yatakawona","John Chibadura","QItIqsa5_gM"]]],[1997,[["Anodyiwa Haataure","System Tazvida & Chazezesa Challengers","noDlElUC_uU"],["Zvibate Pamhaka","Pengaudzoke","fUCJB0GAylc"],["Batai Mazwi","Leonard Zhakata","3LTlQs7bA7o"],["Lullaby","Simon Chimbetu","CFAj11GoXHM"],["Chinhambwe","Oliver Mtukudzi","tAVBuyLvWLA"],["Ndineurombo","Nicholas Zakaria & Khiama Boys","CP2ozATctHM"],["Andinzwi","Oliver Mtukudzi","hLr8IX1o4QI"],["Sarudzai","Charles Charamba","6OvXYry5pn0"],["Masimba Ndeenyu","Charles Charamba","Qmi0Q7aTAT4"]]],[1998,[["Baba na Mai","Alick Macheso","Df3vn58rrNs"],["Gogogoi","Alick Macheso","vQsC8eK-YMU"],["Sarah","Alick Macheso","D7kYe5o-sIo"],["Pakutema Munda","Alick Macheso","ckqIJNb2AUo"],["Zvimbeu Zverudo","System Tazvida & Chazezesa Challengers","9DDjmFkRmVU"],["Ndirimushini","Tongai Moyo & Utakataka Express","vQhTIeMbZN8"],["Tombofara","Calvin & muzi","15WmErBrMT4"],["Vasiye","Simon Chimbetu","3fRHIf7JjEk"]]],[1999,[["Todii","Oliver Mtukudzi","dHMjH2LbNSA"],["Dzoka Uyamwe","Oliver Mtukudzi","YBmwLwPOaCw"],["Kumuzi Kwatu","Alick Macheso","MwwCNUfUJUs"],["Shedia","Alick Macheso","JprycePZfiY"],["Yave Tinotenda","Alick Macheso","oKNoUOs1Z3U"],["Chitubu","Alick Macheso","9iytnS3vwSY"],["Pakayambuka","Leonard Zhakata","TiYLp3DQkzA"],["Mhinduro Iriko","Charles Charamba","M0rzk-WLOWs"],["Moyo Wekurera","Tongai Moyo & Somandla Ndebele","nbcvz5uuZgA"],["Tenda","Simon Chimbetu","0yaIUr9LuuY"]]],[2000,[["Amai VaRubhi","Alick Macheso","IrWgHdOIa70"],["Mundikumbuke","Alick Macheso","nZg7fr8YF90"],["Wemakonzo","Alick Macheso","FKxRiY8hTcM"],["Pane Asipo","Simon Chimbetu","G6fbBA5Uj84"],["Tariro","Alick Macheso","F605eg_GY88"],["Mamvemve","Thomas Mapfumo","faJ72evdmCg"],["Disaster","Thomas Mapfumo","vsmqVmJOIZs"],["Masimba aMwari","Somandla Ndebele","5aVtrcmn_5c","0y6YmVPxhFfmPK8LnVS8k2"],["Kumera Kwezora","Leonard Zhakata","m21ELL6Surs"],["Ndirangarirei","Mai Olivia Charamba","lWUgAS9gf9g"]]],[2001,[["Seiko","Roki ft. Leonard Mapfumo","Vy1wj5I5jKI"],["Chisoni","Alick Macheso","6_Tzwn-GO1M"],["Rurimi","Oliver Mtukudzi","WynEI2gT2-Y"],["Wasakara","Oliver Mtukudzi","rRw8kt9s8BM"],["Hear Me Lord","Oliver Mtukudzi","-0dY4_1tNXg"],["Ndaiwana Hama","Noel Zembe","xB9dnOHQgsY"],["Chara Chimwe","Alick Macheso","Lmt-ox-VLVk"],["Machira Chete","Charles Charamba","1YatTDF-hQg"],["Tauya Naye","David Chifunyise","PgdJfgMqa3s"],["Tisaparadzane","Plaxedes Wenyika","0WRV8CPHKCw"]]],[2002,[["Handirege","Roy & Royce","ZJYOsLohnQ8"],["Tenda","Roy & Royce","bfnb4kQnwGw"],["Samanyemba","Tongai Moyo & Utakataka Express","HdJ9Ch7JrVU"],["Muchina Muhombe","Tongai Moyo & Utakataka Express","x0r4RbHKu6Q"],["Ndakuvara","Oliver Mtukudzi","vbn-N1nmy4Q"],["Gondo","Oliver Mtukudzi","fnvQe3eKGr0"],["Zvakatangira Muchidyiro","Mai Olivia Charamba","NKF9WwcKqQA"],["Wadarirei","Plaxedes Wenyika","pVcem7HIWhM","7GAW0Eb89pKg9VZBLLhZ6y"],["Kurwizi","Jamal ft. Betty Makaya","evph_WRQN80"]]],[2003,[["Came 2 Party","Major Playaz","u4vDI5EVcpk"],["Parudo","Alick Macheso","gtJHC6W5C-E"],["Chingwa","Tongai Moyo & Utakataka Express","ZQ9wxUKLd7s"],["Madhawu","Alick Macheso","tSOJrUbgfTg"],["Kushamula Newe","Extra Large","ZW3KVeCrKBY"],["Pukunyu","Kuligan & Kalabash","e5rKmox2_LI"],["Handidi Naye","Charles Charamba","0fD0SvyApYE"],["Tauya Kuzomutenda","Charles Charamba","pDbRNGomw9U"]]],[2004,[["Makomborero","Hosiah Chipanga","1ZYa85ftSQ0"],["Ndinoda Small House","Extra Large","1WqPGJ5w0yM"],["House Girl","Extra Large","1LNf4o-XAR8"],["Chido","Decibel","xSurJG550rc"],["Unodzoka here","Mc ft. Priscilla","CzVkVUBf78o"],["Nyika","Charles Charamba","ICIFFo6g7W0"]]],[2005,[["Nemumvura Mese (Naye)","Tongai Moyo & Utakataka Express","P6ikg0ykLRk"],["Gandaremvura","Tongai Moyo & Utakataka Express","OoWY-UWRgUA"],["Kapuka Kanonzi Rudo","Tongai Moyo & Utakataka Express","6u8LSUNkVRY"],["Handidi Navo","Tongai Moyo & Utakataka Express","MjQDO0VC8oE"],["Mweya waMwari","Tongai Moyo & Utakataka Express","oZ5hpPgG1hw"],["Head Ina War","Winky D","iRqER4ElyVg"],["Samson","Cephas Mashakada","JCp30nn8UbQ"],["Maidei","R & L","I0xX_ihJwRY"]]],[2006,[["Ndichamuudza Chete","Mafriq","MrmTXvztrT4"],["Suzanna","Roki","3YNCg8XJkdg"],["Idya Banana","Joseph Garakara","mb8QK556nsA"],["Zakeo","Tongai Moyo & Utakataka Express","5UpvVT65VuA"],["Tenda","Tongai Moyo","bMoy800ozAY"]]],[2007,[["Chidzoka","Roki","RylbJ_yGIVM"],["Amuna Wanga","Alick Macheso","KLvh2Y_Huyk"],["Chikopokopo","Alick Macheso & Beater Mangethe","QV1qRAeuaR8"],["Dali","Alick Macheso & Beater Mangethe","BpOMuUOY7qk"],["Chubvu","Tongai Moyo & Utakataka Express","SbBf5UrYAmQ"],["Raramo","Tongai Moyo & Utakataka Express","Evp_XsrSciU"],["Wakanaka","Tongai Moyo & Utakataka Express","ycYWO9fT784"],["Takunda Miedzo","Tongai Moyo & Utakataka Express","09PYj_6_gNI"],["Funga Kaviri","Tongai Moyo & Utakataka Express","CHtw6VKhNUU"],["Ndoda","Roki","p4LhuN1S9FQ"]]],[2008,[["Amai vevana","Gift amuli","C3fbv6oFMUs"],["Controversy","Winky D","eJ2-jLveaSE"],["Baby Mama","Winky D ft. Shayma","TY_KFkGhlmo"],["Isu","Winky D ft. King Shaddy","hwE08t_60_Q"],["Shaina","Alexio Kawara","uvk-7aDYs9A"],["Bubble ur bummz","Buffalo Souljah","1znw5U0kgQE"],["Muridzi Wenyaya","Tongai Moyo & Utakataka Express","5c1PtPyTSJ8"]]],[2009,[["Sungano Yerudo","Jah Prayzah","wM2a8waDK7k"],["Green Lyk Mi Garden","Winky D","NsBPWDJ0Uio"],["Handibvume (Haulume)","Josphat Somanje","cywkNargtQg"],["Number One","Shinsoman ft. Cindy Munyavi","DvaMlk7GRmY"],["Ndinokutendai","Sebastian Magacha","vzmXvhmzZnU"]]],[2010,[["Musarova Bigman","Winky D","Oy-5EmkJBQQ"],["Ndiro yaBaba","Tongai Moyo & Utakataka Express","kbs9OinFIHA"],["Ndinobvuma","Tongai Moyo & Utakataka Express","UJ-OmgP-9gs"],["Tsamba Ndakanyora","Tongai Moyo & Utakataka Express","2w_xt03RM8s"],["Tafadzwa","Alick Macheso","4GuX_aR3Zb0"],["Kudzima Moto","Alick Macheso","19a982_nsQk"],["Zvinoda Kutendwa","Alick Macheso","wpCZqroxarE"],["Nguva Yekutenda","Alick Macheso","HCcC5Da-_Gg"],["Juice Card","Kapfupi","bAAZoE7GEQs"],["Mai Nga","Kapfupi","dCJZuW43bQk"],["Wenera","Maskiri","4-3XJ3LLCJo"]]],[2011,[["Ninja Summer","Winky D","UduX90EqgQk"],["Mufaro","Blessing Shumba","lHMcD7dqzuE"],["Taitirana","Winky D ft. Ninja Lipsy","wH5fLwmCLRE"],["Nyika yeZimbabwe","Charles Charamba","GSHOZ7Ld8JQ","5mEI4TBWqBSoiMoC8zbUjM"],["View Mirror","Winky D","-etZJ6t2TcI"],["Misodzi Yerudo","Leonard Zhakata","OWHMCBaiuw4"],["Munhu weNyama","Winky D ft. Freeman","dsQrctZjUFk"]]],[2012,[["Gotchi Gotchi","Jah Prayzah","DW-iEag462s"],["Maria","Jah Prayzah","zRzKumRgoBA","5pZwQdd9ME3zzmJXbCATN1"],["Ngwarira Kuparara","Jah Prayzah","pnmVHv_mDTo"],["Dande","Jah Prayzah ft. Chiwoniso","Dj3PP2hWcoI"],["Happy","Tehn Diamond","T5tjMAy5ySM"],["Ndini Uya Uya","Soul Jah Love","YPvQwFFJq9Q"],["Gum-Kum","Soul Jah Love","eJ_B8kUAQME"],["Zvipo","Alick Macheso","LSnPbs3FEJ8"],["Love Yemusoja","Sniper Storm","1Bw32pGbW6k"],["Chirimumawoko","Alick Macheso","V5xG0GpHcNM"],["Extraterrestrial","Winky D","18m6YQGrjJM"]]],[2013,[["Macharangwanda","Alick Macheso","cMqncCjROME"],["Sean Timba","Sulumani Chimbetu ft. Jah Prayzah","hYb4c79nHms"],["Tsviriyo","Jah Prayzah","Ima-87RWqs4"],["Mwanasikana","Jah Prayzah","UIOlSJxpYWY"],["Ngoda","Jah Prayzah","eNnf6129zUM"],["Tsamba","Jah Prayzah","fSadH6Iskcc"],["Ita Seunononga","Guspy Warrior","-Y06HbvG6Gg"],["Mabhanditi","Seh Calaz","PxGVqD2Rskg"],["Mumota Murikubvira","Seh Calaz","6uGVaKm5sys"],["Bhaisikopo","Lady Squanda ft. Freeman","-cBZqUtaVrc"]]],[2014,[["Mhai","Tocky Vibes","_6BS7eZWk9Q"],["Simudza Maoko","Tocky Vibes","hxqks4kL7pg"],["Hatimisike","Seh Calaz","cTJBNxyPIEU"],["Paita Party","Winky D","5M8gFQyibBQ"],["Fathers Day","Winky D","XbohfLRsYRo"],["Magafa","Soul Jah Love ft. Winky D","gdDQfbkax4k"],["Dhonza Makomborero","Leonard Zhakata","wDQxqULDLpA"],["Dollar Boy","Leonard Zhakata","Ns_CEH2J8z0"],["African Girl","Trevor Dongo ft. Soul Jah Love & Shyman Shaizo","0eAD7Exzmq4"],["Tokwe Mukosi","Ras Caleb","XvMVgPI3Evk"],["Kwatinobva Kwakasiyana","Seh Calaz","xPL6De-Gn00"],["Mama Devonte","Shinsoman","_mJTRGMshl0"]]],[2015,[["Disappear","Winky D","ASotTWKBGoI"],["Chimwe Nechimwe","Blessing Shumba","FMdDk46ko98"],["Chikorobho","Killer T","qKdjHF5B90w"],["Eriza","Jah Prayzah","h-8EFrZijIU"],["Mwari Anogona","Nicholas Zakaria","84IR6gnq6oc"],["Dzinga Hwema","Oliver Mtukudzi","BaXSpgCi9SU"],["African Girl","Trevor Dongo","0eAD7Exzmq4"],["Amarula","Roberto","kGmlXawab_A"],["Mukwasha Imboko","Jah Signal","eSKtJwDqiUc"],["Kuponda Nhamo","Soul Jah Love","yJE-qs3w-jw"],["Alleluyah","ExQ ft. Roki","y4sTTuq1Ocw"]]],[2016,[["Madam Boss","Leonard Zhakata ft. Progress Chipfumo & Sulumani Chimbetu","GzpdN_pxGDw","7pIOfW0a3Vd238Vyz2HkfH"],["Zvine Mwaka","Leonard Zhakata","GdAN-RZ2-LA"],["Moyo Wekutenda","Leonard Zhakata","SoL5rIHePeE"],["Saina","Tatenda Pinjisi","-wvUS1lEa4w"],["Mudhara Vachauya","Jah Prayzah","90LRHf9sDOk"],["Watora Mari","Jah Prayzah ft. Diamond Platnumz","U8Ogqf9P2qI"],["25","Winky D","wv0VdeBwL0A"],["Baba","Alick Macheso","T5rVMFSE3qg"],["Mukoko","Ammara Brown","Hh86rsoy_GY"],["Joina City","Freeman","8slV029zjbs"]]],[2017,[["Changa Chakajaira","Blessing Shumba","sfVPebzGuu4"],["Tariro Ichiripo","Blessing Shumba","5vIwfY-Ezws"],["Kutonga Kwaro","Jah Prayzah","TWegEHGDuMI"],["Sendekera","Jah Prayzah ft. Mafikizolo","dxIBxJDwOzQ"],["Nziyo Yerudo","Jah Prayzah ft. Yemi Alade","esf9p-qQGFI"],["Dherira","Andy Muridzo","EFpm3f26G7U"],["Hondo","Killer T","ykmhYeJD_Ts"],["My Lilly","Jah Prayzah ft. Davido","2dkBahXXAyo"],["Tsvigiri","ExQ","lRiLwFyUBas"],["My woman","Winky D","5HgH0tB93r4"]]],[2018,[["Kanjiva","Enzo Ishall","jmvV05glXlg"],["Boom Shelele","Nutty O","N8Uo2xdUszc"],["Ngirozi","Winky D ft. Vabati VaJehova","wahDnd_GkX4"],["Gombwe","Winky D","1mDhVXbQvpg"],["Highway Code","Winky D","cdwwllj1OT0"],["Number One","Winky D ft. Haig Park Primary","RqX04ooG8RY"],["Matishamisa","Rev. Togarepi Chivaviro","oNGibtr0jVM"],["Wekwedu","Freman HKD","ZAlTbcF4hbg"],["Dzamutsana","Jah Prayzah","4hzaGrEawqE"],["Mai Mwana","Takuara","I2ZtI9_RlXA"]]],[2019,[["Mweya Ndesesedze","Mambo Dhuterere","zlZeb2nLCps"],["Svoto","Ammara Brown","DXNXdDvEY5Y"],["Ramba Wakadzvanya","Baba Harare","z6qYePdocmk"],["Ijipita","Winky D","feVtr3FGmcw"],["Ngaibake","Freeman HKD ft. Alick Macheso","VMYtr8I69Rc"],["Area 51","Winky D","LIQ-hR6eFHQ"],["Mugarden","Winky D ft. Gemma Griffiths","rXWMqXWfwK0"],["Kure","Ti Gonzi & Ishan","b36D0yvLoz8"],["Bodo","Bazooker","GLeXJ8liUD8"],["Rita (Remix)","Baba Harare ft. Mai Titi","lLVkhocNqt0"]]],[2020,[["Fadza Mutengi","Poptain & Allanah","ZzX54K91Bgw"],["Taurai Madzoka","Mark Ngwazi","aJ7Pn59zTwQ"],["Kubata Basa","Mambo Dhuterere","60UW85vadYc"],["Donhodzo","Jah Prayzah","2NJUPWoMIvU"],["Hello Mwari","Jah Master","V4QodFhhQxE"],["My Melody","Nox ft. Master KG","pVUAVmu8YuI"],["Reply","Winky D","rg0kvV9Zqp4"],["Titungamire","Gemma Griffiths","F46Eii5JKHg"],["Safe","Nutty O","uBmYbHSxSIM"],["Kokai","Nutty O","sShnYkt08M8"]]],[2021,[["Juzi","Kae Chaps","V5YTJJFAvr8"],["Ndichafa Rinhiko","Soul Jah Love","9vTh-3GyHTg"],["Handipere Power","Nutty O","rjC3Nv6ASQ4"],["Hamen Hlebanna","Mambo Dhuterere ft. Zolasko","BoiCtDMtOvU"],["Pombi","Freeman","1ijJP7G1K0k"],["Patati Patata","Roki ft. Koffi Olomide & Rayvanny","CTfIyAM_TqU"],["Wakatuka Amai","Holy Ten","XK8kX-i8lQM"],["Ngeke Bangimele","Awa Khiwe ft. Ghanaian Stallion","wBnt3a7a32s"],["Screenshot","Roki ft. Mr Brown & Leon Lee","CYn_ZeG8NrI"],["Murder","Jah Prayzah","cah0L9kOikA"]]],[2022,[["Manyepo","Shashl ft. Nice Killer","fRU3hN6J3yA"],["Fire","Leo Magozz x Bling4 x Brian Jeck","eHMB-MyIiV0"],["Usabvume","Jah Signal","kPi6cPk8iRo"],["Hakete","Killer T","m9x2GuO2r_4"],["Lola","Ishan, Annatoria","xNcgZMr07L4"],["Robbery","Freeman","_VVs1VhxxJU"],["Mhosva Yangu","Tocky Vibes","E7G4P3Y_wdo"],["Silas Mavende","Saintfloew","bM2N-vwGL8s"],["Haarore","Takura","gnDn_bZwBA8"],["Nharo","Hillzy","Wtb5i0K7cJI"]]],[2023,[["Ibotso","Winky D ft. Holy Ten","ZB0eUo6rtM0"],["Delilah","Holy Ten","vdYneXEcVYg"],["Pressure","Holy Ten ft. Mr Candy & Michael Magz","dj4qOUEorNA"],["Chiremerera","Jah Prayzah","vSq9rDpr8zk"],["Sarungano","Jah Prayzah","3x120V6PcH8"],["Melody","Master H","wc6mW5RtoXQ"],["Hazvireve Rudo Handina","Takura","vtiSJPYudZM"],["Mfana Wepajecha","Kayflow","4H4QzjXGPLA"],["Makanonoka","Nutty O","WiipF1hlFno"],["Mashoko","ExQ ft. Kim Makumbe","nWvj3LqGJDY"]]],[2024,[["Kana Ndanyura","Killer T","9ZjfDoP3Vec"],["Furuwa","Jah Prayzah","NNvDIkj52uU"],["Nyeredzi","Jah Prayzah","I0PRB0FzLaw"],["Kutsamwa Kune Labour","Nisha Ts","mWcIXOGJoq4"],["Banga","Holy Ten","c3_vJVMbzQQ"],["Dhanzi","Master H","4p_lxxWIx1A"],["Masahwira","Enzo Ishall","HXqSzTF4wqQ"],["Dai Tangosiyana Nazvo","Chillmaster","Fg2zOJ7s2Wc"],["Kutidzorera Mushure","Voltz JT","JIIBaITSx74"],["Zvichada Hama","Alick Macheso","LF_nnhE6Bho"],["Madiro","Kae Chaps","G_Pta5FL2yc"]]],[2025,[["Too Much","Nutty O","EGaN6lHZYig"],["Siya","Winky D","K7uf6KKuQmA"],["Ruzhowa","Jah Prayzah","Zsf9ldyE_6o"],["Admire Kadembo","Nisha Ts","25W2HoaWWsQ"],["TA TA TA","Nyasha David","5v8oFVuSuh0"],["Husiku Hwese (Remix)","Tamy Moyo & Mark Ngwazi","t9hD5rFwo60"],["Marulez","Jnr Spragga","vbpqRcbGAOI"],["Kamubhoga","Oriyano","OpGGWOblggw"],["Chibatamabvi","Enzo Ishall","1b7TNiheUCg"],["Pote","Learn Shona, Takura & Tamy Moyo","RCuVkrwT2KU"],["Horror","Chillmaster","RRYMMtdlNpE"],["Door Ratovharwa (Mjolo)","Donator Calvins","Wd3UQcILT78","6vQAQ9cMg5OGYxwukJtIoN"]]]];
+const YEARS = RAW.map(([y, list]) => ({y, songs: list.map(([t, a, v, sp], i) => ({t, a, v: v || null, sp: sp || null, i, y}))}));
+const BY = Object.fromEntries(YEARS.map(Y => [Y.y, Y]));
+const FIRST = YEARS[0].y, LAST = YEARS[YEARS.length - 1].y;
+const PREVIEW_START = 30;         // previews start this many seconds into the video
+const LS = "zimvault.years", LS_SEEN = "zimvault.seen", LS_OPEN = "zimvault.unblurred";
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || "null") ?? d; } catch(e) { return d; } };
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+let picks = load(LS, {}) || {};
+let seen = load(LS_SEEN, {}) || {};   // furthest song revealed per year
+let opened = load(LS_OPEN, {}) || {}; // songs the visitor has tapped to unblur
+const isOpen = (y, j) => picks[y] === j || (opened[y] || []).includes(j);
+const openSong = (y, j) => { if (!isOpen(y, j)) { (opened[y] ||= []).push(j); store(LS_OPEN, opened); } };
+const $ = s => document.querySelector(s);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const ytSearch = s => "https://www.youtube.com/results?search_query=" + encodeURIComponent(s.t + " " + s.a);
+const spSearch = s => "https://open.spotify.com/search/" + encodeURIComponent(s.t + " " + s.a);
+const pickOf = y => { const i = picks[y]; return (i != null && BY[y] && BY[y].songs[i]) || null; };
+const save = () => store(LS, picks);
+const MOVED = {"1980":[3,-1,-1,-1,-1,-1,4,-1],"1981":[-1,-1,-1,-1,-1,-1,-1],"1982":[0,-1,-1,-1,-1,-1,-1],"1983":[0,-1,-1,-1,-1,-1],"1984":[0,-1,3,-1,-1,-1,-1,-1],"1985":[0,-1,-1,-1,-1,-1,-1,-1],"1986":[0,-1,-1,-1,-1,-1,-1,-1],"1987":[0,-1,4,-1,-1,-1,-1,-1],"1988":[0,-1,-1,1,-1,-1,-1,-1],"1989":[-1,-1,-1,-1,-1,-1,-1,-1],"1990":[-1,-1,-1,-1,-1,-1,-1,-1],"1991":[0,-1,-1,-1,-1,-1,-1,-1],"1992":[-1,-1,-1,-1,-1,-1,-1,-1,-1],"1993":[-1,-1,-1,-1,-1,-1,-1],"1994":[0,-1,-1,7,-1,-1,-1,-1],"1995":[-1,-1,-1,-1,-1,-1],"1996":[-1,-1,-1,-1,-1,-1],"1997":[-1,-1,-1,-1,-1,-1],"1998":[-1,-1,-1,-1,-1,4,-1,-1],"1999":[-1,-1,-1,7,-1,6,0],"2000":[1,-1,-1,-1],"2001":[-1,-1,2,-1,-1,-1,-1,-1],"2002":[-1,-1,-1,-1,-1,-1,-1,-1],"2003":[-1,-1,-1,-1,-1,-1,-1,-1],"2004":[-1,-1,-1,-1,-1,-1,-1,-1],"2005":[-1,-1,-1,-1,-1,-1,-1,-1],"2006":[-1,-1,-1,-1,-1,-1,-1,-1],"2007":[6,0,-1,-1,-1,-1,-1],"2008":[-1,-1,-1,-1,-1,-1,-1],"2009":[-1,-1,-1,-1,-1,-1],"2010":[-1,0,-1,-1,-1,-1,-1],"2011":[-1,-1,-1,-1,1,-1,-1,-1],"2012":[-1,-1,-1,-1,-1,-1,-1],"2013":[0,2,-1,-1,7,-1,-1,-1],"2014":[6,0,-1,8,-1,-1,-1,-1],"2015":[1,0,3,10,-1,9,-1,-1],"2016":[0,5,8,-1,-1,-1,-1,-1],"2017":[-1,-1,-1,-1,-1,-1,-1,-1],"2018":[6,0,-1,2,8,-1,-1,-1],"2019":[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"2020":[1,4,0,8,-1,-1,-1,-1,-1,-1],"2021":[-1,2,-1,5,6,-1,-1,-1,-1,-1],"2022":[-1,-1,-1,-1,-1,-1,-1,3,1,2],"2023":[-1,3,-1,-1,-1,-1,-1,0,-1,-1],"2024":[0,-1,-1,4,-1,-1,-1,-1,-1,-1],"2025":[2,-1,0,-1,-1,-1,-1,-1,-1,-1]}; // song list update: old position -> new position (-1 = song removed)
+if (load("zimvault.listv", 1) < 2) {
+  const np = {}; Object.keys(picks).forEach(y => { const j = MOVED[y] ? MOVED[y][picks[y]] : -1; if (j != null && j >= 0) np[y] = j; });
+  const no = {}; Object.keys(opened).forEach(y => { const m = MOVED[y]; if (m) { const a = (opened[y] || []).map(i => m[i]).filter(j => j != null && j >= 0); if (a.length) no[y] = a; } });
+  picks = np; opened = no; seen = {};
+  save(); store(LS_OPEN, opened); store(LS_SEEN, seen); store("zimvault.listv", 2);
+}
+const MOVED3 = {"1980":[[1980,0],[1980,1],[1980,2],[1980,3],[1980,4],[1980,5],[1980,6],[1980,7],[1980,8],[1980,9]],"1981":[[1981,0],[1981,1],[1981,2],[1981,3],[1981,4],[1981,5],[1981,6],[1981,7],[1981,8],[1981,9]],"1982":[[1982,0],[1982,1],[1982,2],[1982,3],[1982,4],[1982,5],[1982,6],[1982,7],[1982,8],[1982,9]],"1983":[[1983,0],[1983,1],[1983,2],[1983,3],[1983,4],[1983,5],[1983,6],[1983,7],[1983,8],[1983,9]],"1984":[[1984,0],[1984,1],[1984,2],[1985,9],[1984,3],[1984,4],[1984,5],[1984,6],[1984,7],[1984,8]],"1985":[[1985,0],[1985,1],[1985,2],[1985,3],[1984,9],[1985,4],[1985,5],[1985,6],[1985,7],[1985,8]],"1986":[[1983,10],[1984,10],[1986,0],[1986,1],[1986,2],[1986,3],[1986,4],[1986,5],[1986,6],[1986,7]],"1987":[[1987,0],[1987,1],[1987,2],[1987,3],[1987,4],[1987,5],[1987,6],[1987,7],[1987,8],[1987,9]],"1988":[[1988,0],[1988,1],[1988,2],[1988,3],[1988,4],[1988,5],[1988,6],[1988,7],[1988,8],[1988,9]],"1989":[[1989,0],[1989,1],[1989,2],[1989,3],[1989,4],[1989,5],[1989,6],[1989,7],[1989,8],[1989,9]],"1990":[[1990,0],[1990,1],[1990,2],[1990,3],[1990,4],[1990,5],[1990,6],[1990,7],[1990,8],[1990,9]],"1991":[[1991,0],[1991,1],[1991,2],[1991,3],[1991,4],[1991,5],[1991,6],[1991,7],[1991,8],[1991,9]],"1992":[[1992,0],[1992,1],[1992,2],[1992,3],[1992,4],[1992,5],[1992,6],[1992,7],[1992,8],[1992,9]],"1993":[[1993,0],[1993,1],[1997,9],[1993,2],[1993,3],[1993,4],[1993,5],[1993,6],[1993,7],[1993,8]],"1994":[[1994,0],[1994,1],[1994,2],[1994,3],[1994,4],[1991,10],[1994,5],[1994,6],[1994,7],[1994,8]],"1995":[[1995,0],[1995,1],[1995,2],[1995,3],[1995,4],[1995,5],[1995,6],[1995,7],[1995,8],[1995,9]],"1996":[[1996,0],[1996,1],[1996,2],[1996,3],[1996,4],[1996,5],[1996,6]],"1997":[[1997,0],[1997,1],[1997,2],[1997,3],[1997,4],[1997,5],[1997,6],[1997,7],[1997,8]],"1998":[[1998,0],[1998,1],[1998,2],[1998,3],[1998,4],[1998,5],[1998,6],[1998,7],[1998,8]],"1999":[[1999,0],[1999,1],[1999,2],[1999,3],[1999,4],[1999,5],[1999,6],[1999,7],[1999,8],[1999,9]],"2000":[[2000,0],[2000,1],[2000,2],[2000,3],[2000,4],[2000,5],[2000,6],[2000,7],[2000,8],[2000,9]],"2001":[[2001,0],[2001,1],[2001,2],[2001,3],[2001,4],[2001,5],[2001,6],[2001,7],[2001,8],[2001,9]],"2002":[[2002,0],[2002,1],[2002,2],[2002,3],[2002,4],[2002,5],[2002,6],[2002,7],[2002,8],[2002,9]],"2003":[[2003,0],[2003,1],[2003,2],[2003,3],[2003,4],[2003,5],[2003,6],[2003,7],[2003,8]],"2004":[[2004,0],[2004,1],[2004,2],[2004,3],[2004,4],[2004,5],[2004,6]],"2005":[[2005,0],[2005,1],[2005,2],[2005,3],[2005,4],[2005,5]],"2006":[[2006,0],[2006,1],[2006,2],[2006,3]],"2007":[[2007,0],[2007,1],[2007,2],[2007,3],[2007,4],[2007,5],[2007,6],[2007,7],[2007,8],[2007,9]],"2008":[[2008,0],[2008,1],[2008,2],[2008,3],[2008,4]],"2009":[[2008,5],[2009,0],[2009,1]],"2010":[[2010,0],[2010,1],[2010,2],[2010,3],[2010,4],[2010,5],[2010,6],[2010,7],[2010,8],[2010,9],[2010,10]],"2011":[[2012,7],[2012,8],[2012,9],[2012,10],[2011,0],[2011,1],[2011,2],[2011,3]],"2012":[[2012,0],[2012,1],[2012,2],[2012,3],[2012,4],[2012,5],[2012,6]],"2013":[[2013,0],[2013,1],[2013,2],[2013,3],[2013,4],[2013,5],[2013,6],[2013,7],[2013,8],[2013,9]],"2014":[[2014,0],[2014,1],[2014,2],[2014,3],[2014,4],[2014,5],[2014,6],[2014,7],[2014,8],[2014,9]],"2015":[[2015,0],[2015,1],[2015,2],[2015,3],[2015,4],[2015,5],[2015,6],[2015,7],[2015,8],[2015,9],[2015,10]],"2016":[[2016,0],[2016,1],[2016,2],[2016,3],[2016,4],[2016,5],[2016,6],[2016,7],[2016,8],[2016,9]],"2017":[[2017,0],[2017,1],[2017,2],[2017,3],[2017,4],[2017,5],[2017,6],[2017,7],[2017,8],[2017,9]],"2018":[[2018,0],[2018,1],[2018,2],[2018,3],[2018,4],[2018,5],[2018,6],[2018,7],[2018,8],[2018,9]],"2019":[[2019,0],[2019,1],[2019,2],[2019,3],[2019,4],[2019,5],[2019,6],[2019,7],[2019,8],[2019,9]],"2020":[[2020,0],[2020,1],[2020,2],[2020,3],[2020,4],[2020,5],[2020,6],[2020,7],[2020,8],[2020,9]],"2021":[[2021,0],[2021,1],[2021,2],[2021,3],[2021,4],[2021,5],[2021,6],[2021,7],[2021,8],[2021,9]],"2022":[[2022,0],[2022,1],[2022,2],[2022,3],[2022,4],[2022,5],[2022,6],[2022,7],[2022,8],[2022,9]],"2023":[[2023,0],[2023,1],[2023,2],[2023,3],[2023,4],[2023,5],[2023,6],[2023,7],[2023,8],[2023,9]],"2024":[[2024,0],[2024,1],[2024,2],[2024,3],[2024,4],[2024,5],[2024,6],[2024,7],[2024,8],[2024,9]],"2025":[[2025,0],[2025,1],[2025,2],[2025,3],[2025,4],[2025,5],[2025,6],[2025,7],[2025,8],[2025,9]]}; // year fixes: old year -> [new year, new position]
+if (load("zimvault.listv", 1) < 3) {
+  const np = {}, cross = [];
+  Object.keys(picks).forEach(y => { const t = MOVED3[y] && MOVED3[y][picks[y]]; if (!t) return; if (String(t[0]) === y) np[y] = t[1]; else cross.push(t); });
+  cross.forEach(t => { if (np[t[0]] == null) np[t[0]] = t[1]; });
+  const no = {}; Object.keys(opened).forEach(y => (opened[y] || []).forEach(i => { const t = MOVED3[y] && MOVED3[y][i]; if (t) (no[t[0]] = no[t[0]] || []).includes(t[1]) || no[t[0]].push(t[1]); }));
+  picks = np; opened = no; seen = {};
+  save(); store(LS_OPEN, opened); store(LS_SEEN, seen); store("zimvault.listv", 3);
+}
+const REPLACED4 = {"1980":[5,8],"1981":[6,7],"1982":[2,3],"1984":[2],"1988":[7,8,9],"1990":[4,6],"1992":[5],"1993":[1,3,7],"1995":[2,3],"1996":[1,3],"1997":[0,1,2],"1998":[3],"1999":[7,9],"2000":[3,7]}; // songs swapped for linked ones: year -> positions
+if (load("zimvault.listv", 1) < 4) {
+  Object.keys(REPLACED4).forEach(y => { const r = REPLACED4[y]; if (r.includes(picks[y])) delete picks[y]; if (opened[y]) opened[y] = opened[y].filter(i => !r.includes(i)); });
+  save(); store(LS_OPEN, opened); store("zimvault.listv", 4);
+}
+const MOVED5 = {"1985":[1,2,3,4,5,6,7,8,9,0],"1995":[0,1,2,3,4,5,6,-1,8,9],"1997":[1,2,3,-1,4,-1,-1,7,8,0],"1998":[0,1,2,3,-1,-1,-1,-1,-1],"2000":[0,1,2,3,4,5,6,7,8,-1],"2001":[0,1,2,3,4,-1,-1,7,8,9],"2002":[0,1,2,3,-1,-1,-1,-1,8,-1],"2003":[0,1,2,-1,-1,4,5,6,7],"2004":[-1,1,2,3,-1,-1,6],"2006":[0,1,-1,-1],"2007":[0,1,-1,3,4,5,6,7,8,9],"2008":[-1,1,2,3,4,6],"2012":[-1,5,6,7,-1,9,10,0,1,2,3],"2017":[0,1,2,3,4,5,6,-1,8,-1],"2018":[0,1,2,3,4,5,6,-1,8,-1],"2019":[-1,1,2,3,-1,5,-1,-1,-1,9],"2020":[0,1,2,3,4,5,-1,-1,8,-1],"2022":[0,-1,2,3,-1,5,6,-1,8,9],"2023":[0,1,2,3,4,-1,6,7,8,9],"2024":[0,1,2,-1,4,5,6,7,8,9],"2025":[0,1,2,-1,-1,5,-1,7,8,9]}; // final link sheet: year -> old position -> new position (-1 = removed)
+if (load("zimvault.listv", 1) < 5) {
+  Object.keys(MOVED5).forEach(y => { const m = MOVED5[y]; if (picks[y] != null) { const j = m[picks[y]]; if (j != null && j >= 0) picks[y] = j; else delete picks[y]; } if (opened[y]) opened[y] = opened[y].map(i => m[i]).filter(j => j != null && j >= 0); });
+  seen = {}; save(); store(LS_OPEN, opened); store(LS_SEEN, seen); store("zimvault.listv", 5);
+}
+const REPLACED6 = {"2001":[2]}; // Bvuma swapped for Rurimi
+if (load("zimvault.listv", 1) < 6) {
+  Object.keys(REPLACED6).forEach(y => { const r = REPLACED6[y]; if (r.includes(picks[y])) delete picks[y]; if (opened[y]) opened[y] = opened[y].filter(i => !r.includes(i)); });
+  save(); store(LS_OPEN, opened); store("zimvault.listv", 6);
+}
+const MOVED7 = {"1984":[[1984,0],[1984,1],[1984,2],[1984,3],[1984,4],[1984,5],[2005,6],[1984,6],[1984,7],[1984,8],[1984,9]],"2004":[[2004,0],[2004,1],[2004,2],[2005,7],[2004,3],[2004,4],[2004,5]]}; // Samson and Maidei moved to 2005: old year -> [new year, new position]
+if (load("zimvault.listv", 1) < 7) {
+  const np = {}, cross = [];
+  Object.keys(picks).forEach(y => { const t = MOVED7[y] ? MOVED7[y][picks[y]] : [Number(y), picks[y]]; if (!t) return; if (String(t[0]) === y) np[y] = t[1]; else cross.push(t); });
+  cross.forEach(t => { if (np[t[0]] == null) np[t[0]] = t[1]; });
+  const no = {}; Object.keys(opened).forEach(y => (opened[y] || []).forEach(i => { const t = MOVED7[y] ? MOVED7[y][i] : [Number(y), i]; if (t) (no[t[0]] = no[t[0]] || []).includes(t[1]) || no[t[0]].push(t[1]); }));
+  picks = np; opened = no; save(); store(LS_OPEN, opened); store("zimvault.listv", 7);
+}
+const MOVED8 = {"2006":[0,1,2,3,4,-1],"2009":[0,1,2,3,-1,-1,4]}; // removed songs without links: year -> old position -> new position (-1 = removed)
+if (load("zimvault.listv", 1) < 8) {
+  Object.keys(MOVED8).forEach(y => { const m = MOVED8[y]; if (picks[y] != null) { const j = m[picks[y]]; if (j != null && j >= 0) picks[y] = j; else delete picks[y]; } if (opened[y]) opened[y] = opened[y].map(i => m[i]).filter(j => j != null && j >= 0); });
+  save(); store(LS_OPEN, opened); store("zimvault.listv", 8);
+}
+const MOVED9 = {"2011":[0,2,4,5,1,3]}; // 2011 order mixed: old position -> new position
+if (load("zimvault.listv", 1) < 9) {
+  Object.keys(MOVED9).forEach(y => { const m = MOVED9[y]; if (picks[y] != null) { const j = m[picks[y]]; if (j != null && j >= 0) picks[y] = j; else delete picks[y]; } if (opened[y]) opened[y] = opened[y].map(i => m[i]).filter(j => j != null && j >= 0); });
+  save(); store(LS_OPEN, opened); store("zimvault.listv", 9);
+}
+const MOVED10 = {"2011":[0,1,2,3,4,6]}; // Misodzi Yerudo added to 2011: old position -> new position
+if (load("zimvault.listv", 1) < 10) {
+  Object.keys(MOVED10).forEach(y => { const m = MOVED10[y]; if (picks[y] != null) { const j = m[picks[y]]; if (j != null && j >= 0) picks[y] = j; else delete picks[y]; } if (opened[y]) opened[y] = opened[y].map(i => m[i]).filter(j => j != null && j >= 0); });
+  save(); store(LS_OPEN, opened); store("zimvault.listv", 10);
+}
+const REPLACED11 = {"2014":[8]}; // Kumbumura Mhute swapped for African Girl
+if (load("zimvault.listv", 1) < 11) {
+  Object.keys(REPLACED11).forEach(y => { const r = REPLACED11[y]; if (r.includes(picks[y])) delete picks[y]; if (opened[y]) opened[y] = opened[y].filter(i => !r.includes(i)); });
+  save(); store(LS_OPEN, opened); store("zimvault.listv", 11);
+}
+const SITE = location.origin + location.pathname;
+const DISCLAIMER = "Heads up: some songs may not be listed under the exact year they came out. Release dates for older Zimbabwean music are hard to confirm, so treat the years as a guide.";
+const say = t => { const a = $("#announce"); a.textContent = ""; setTimeout(() => { a.textContent = t; }, 50); };
+function btn(label, cls, onClick){ const b = el("button", "btn" + (cls ? " " + cls : ""), label); b.type = "button"; b.addEventListener("click", onClick); return b; }
+function linkBtn(label, cls, href){ const a = el("a", "btn" + (cls ? " " + cls : ""), label); a.href = href; return a; }
+function extLink(label, href){ const a = el("a", null, label); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
+
+/* ---------- Community votes (Wix CMS, anonymous visitor token) ---------- */
+const WIX_CLIENT_ID = "7d7898b3-91f7-40eb-9bda-775a581eeae1";
+const WIX = "https://www.wixapis.com";
+const LS_TOK = "wix-visitor-" + WIX_CLIENT_ID, LS_VOTER = "zimvault.voter", LS_SYNC = "zimvault.synced";
+let tallies = {}, talliesLoaded = false;
+let voter = load(LS_VOTER, null);
+if (!voter) { voter = "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); store(LS_VOTER, voter); }
+let tokPending = null;
+async function mint(body){
+  const r = await fetch(WIX + "/oauth2/token", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(Object.assign({clientId: WIX_CLIENT_ID}, body))});
+  if (!r.ok) throw new Error("auth " + r.status);
+  const d = await r.json();
+  const t = {accessToken: d.access_token, refreshToken: d.refresh_token, expiresAt: Date.now() + d.expires_in * 1000};
+  store(LS_TOK, t); return t;
+}
+async function token(){
+  const t = load(LS_TOK, null);
+  if (t && t.expiresAt - 60000 > Date.now()) return t.accessToken;
+  tokPending = tokPending || (async () => {
+    let f = null;
+    if (t && t.refreshToken) { try { f = await mint({grantType: "refresh_token", refreshToken: t.refreshToken}); } catch(e) {} }
+    if (!f) f = await mint({grantType: "anonymous"});
+    return f.accessToken;
+  })().finally(() => { tokPending = null; });
+  return tokPending;
+}
+async function wixPost(path, body){
+  const r = await fetch(WIX + path, {method: "POST", headers: {"Content-Type": "application/json", Authorization: await token()}, body: JSON.stringify(body)});
+  if (!r.ok) throw new Error(path + " " + r.status);
+  return r.json();
+}
+async function loadTallies(){
+  try {
+    const d = await wixPost("/wix-data/v2/items/aggregate", {dataCollectionId: "songVotes", aggregation: {groupingFields: ["year", "idx"], operations: [{resultFieldName: "n", itemCount: {}}]}, paging: {limit: 1000}, consistentRead: true});
+    const t = {};
+    (d.results || []).forEach(r => { const y = Math.round(r.year), i = Math.round(r.idx); if (BY[y] && BY[y].songs[i]) (t[y] ||= {})[i] = Math.round(r.n); });
+    tallies = t; talliesLoaded = true;
+    if (!load(LS_SYNC, false)) syncOldPicks();
+    refreshVotes();
+  } catch(e) {}
+}
+function sendVote(y, i){
+  return wixPost("/wix-data/v2/items/save", {dataCollectionId: "songVotes", dataItem: {id: voter + "_" + y, data: {year: +y, idx: i}}}).catch(() => {});
+}
+async function syncOldPicks(){
+  const ys = Object.keys(picks).filter(y => pickOf(y));
+  for (const y of ys) await sendVote(y, picks[y]);
+  store(LS_SYNC, true);
+  if (ys.length) setTimeout(loadTallies, 2500);
+}
+function castVote(y, i){
+  const prev = picks[y];
+  if (prev === i) return;
+  const t = (tallies[y] ||= {});
+  if (prev != null && t[prev]) t[prev]--;
+  t[i] = (t[i] || 0) + 1;
+  sendVote(y, i);
+}
+const totalVotes = y => Object.values(tallies[y] || {}).reduce((a, b) => a + b, 0);
+const pct = (y, i) => { const T = totalVotes(y); return T ? Math.round(((tallies[y] || {})[i] || 0) * 100 / T) : 0; };
+let refreshVotes = () => {};
+
+/* ---------- Sharing ---------- */
+async function shareIt(text, url, st){
+  if (navigator.share) { try { await navigator.share({title: "Songs of the Year: Zim Edition", text, url}); return; } catch(e) { if (e && e.name === "AbortError") return; } }
+  const full = text + " " + url;
+  try { await navigator.clipboard.writeText(full); st.textContent = "Link copied — paste it to your friends."; }
+  catch(e) { st.textContent = full; }
+}
+function shareRow(text, url){
+  const wrap = el("div", "share");
+  const st = el("span", "status"); st.setAttribute("role", "status");
+  const sh = btn("Share", "", () => shareIt(text, url, st));
+  const wa = el("a", "btn ok", "WhatsApp"); wa.href = "https://wa.me/?text=" + encodeURIComponent(text + " " + url); wa.target = "_blank"; wa.rel = "noopener";
+  const fb = el("a", "btn ghost", "Facebook"); fb.href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url); fb.target = "_blank"; fb.rel = "noopener";
+  const x = el("a", "btn ghost", "X"); x.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url); x.target = "_blank"; x.rel = "noopener";
+  wrap.append(sh, wa, fb, x, st);
+  return wrap;
+}
+
+/* ---------- YouTube player (one at a time, mounted where it is needed) ---------- */
+let player = null, playerHost = null, apiReady = false, pendingCreate = null, onEnded = null, onYtError = null;
+window.onYouTubeIframeAPIReady = () => { apiReady = true; if (pendingCreate) { const f = pendingCreate; pendingCreate = null; f(); } };
+(() => { const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(s); })();
+let mountedId = null;
+function mountVideo(host, id, start, auto = true, mute = false){
+  mountedId = id;
+  if (player && playerHost === host && host.isConnected && player.loadVideoById) {
+    if (auto) player.loadVideoById({videoId: id, startSeconds: start}); else player.cueVideoById({videoId: id, startSeconds: start});
+    try { if (mute) player.mute(); else player.unMute(); } catch(e) {}
+    return;
+  }
+  destroyPlayer(); mountedId = id;
+  host.textContent = "";
+  const d = el("div"); host.appendChild(d); playerHost = host;
+  const create = () => {
+    player = new YT.Player(d, {videoId: id, playerVars: {autoplay: auto ? 1 : 0, mute: mute ? 1 : 0, playsinline: 1, rel: 0, start: start | 0},
+      events: {
+        onReady: e => { if (auto) e.target.playVideo(); },
+        onStateChange: e => { if (e.data === YT.PlayerState.ENDED && onEnded) onEnded(); },
+        onError: () => { if (onYtError) onYtError(); }
+      }});
+  };
+  if (apiReady) create(); else pendingCreate = create;
+}
+function destroyPlayer(){
+  pendingCreate = null;
+  if (player) { try { player.destroy(); } catch(e) {} }
+  player = null; playerHost = null; mountedId = null;
+}
+const pauseVideo = () => { try { player && player.pauseVideo && player.pauseVideo(); } catch(e) {} };
+const resumeVideo = () => { try { player && player.playVideo && player.playVideo(); } catch(e) {} };
+function spotifyFrame(id, title){
+  const f = document.createElement("iframe");
+  f.src = "https://open.spotify.com/embed/track/" + id + "?utm_source=generator";
+  f.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+  f.loading = "lazy"; f.title = "Spotify player: " + title;
+  return f;
+}
+
+/* ---------- Bottom player for "Play my picks" ---------- */
+let queue = null, qi = 0;
+function playQueue(list){
+  queue = list; qi = 0; closeMini(); $("#dock").classList.add("open"); playQ();
+}
+function playQ(){
+  const s = queue[qi];
+  $("#dT").textContent = s.t + " (" + s.y + ")"; $("#dA").textContent = s.a;
+  onEnded = nextQ; onYtError = nextQ;
+  mountVideo($("#dvid"), s.v, 0);
+}
+function nextQ(){ if (!queue) return; qi++; if (qi >= queue.length) { closeDock(); return; } playQ(); }
+function closeDock(){ queue = null; onEnded = null; onYtError = null; if (playerHost === $("#dvid")) destroyPlayer(); $("#dvid").textContent = ""; $("#dock").classList.remove("open"); }
+$("#dNext").addEventListener("click", nextQ);
+$("#dClose").addEventListener("click", closeDock);
+
+/* ---------- Home ---------- */
+function count(){
+  const n = Object.keys(picks).filter(y => pickOf(y)).length;
+  $("#count").textContent = n + " / " + YEARS.length + " years picked";
+  return n;
+}
+function landing(){
+  document.title = "Songs of the Year: Zim Edition";
+  const v = $("#view"); v.textContent = "";
+  const n = count();
+  const nextY = (YEARS.find(Y => !pickOf(Y.y)) || YEARS[0]).y;
+  const s = el("section", "start");
+  const stripe = el("div", "stripe"); stripe.setAttribute("aria-hidden", "true"); stripe.innerHTML = "<i></i><i></i><i></i><i></i>";
+  const h = el("h1", "title"); h.append("Songs of the Year: ", el("em", null, "Zim Edition"));
+  const go = linkBtn(n ? "Continue with " + nextY : "Start", "accent big", "#" + (n ? nextY : FIRST));
+  const alt = el("p", "alt"); const all = el("a", null, "See all years"); all.href = "#years"; alt.appendChild(all);
+  s.append(stripe, el("p", "eyebrow", FIRST + " ·· " + LAST + " ·· " + YEARS.length + " years"), h, el("p", "lede", "Pick one Zimbabwean song from every year, 1980 to " + LAST + "."), go, alt, el("p", "disclaimer", DISCLAIMER));
+  v.appendChild(s);
+}
+function home(){
+  document.title = "All years · Songs of the Year: Zim Edition";
+  const v = $("#view"); v.textContent = "";
+  const n = count();
+  const hero = el("header", "hero");
+  const stripe = el("div", "stripe"); stripe.setAttribute("aria-hidden", "true"); stripe.innerHTML = "<i></i><i></i><i></i><i></i>";
+  const h = el("h1", "title"); h.append("All ", el("em", null, "years"));
+  const nextY = (YEARS.find(Y => !pickOf(Y.y)) || YEARS[0]).y;
+  const how = el("ol", "howto");
+  ["Open a year.", "Tap a blurred song to reveal it and hear it.", "Tap Pick this song on your favourite."].forEach(t => how.appendChild(el("li", null, t)));
+  hero.append(el("p", "disclaimer", DISCLAIMER));
+  hero.prepend(stripe, el("p", "eyebrow", FIRST + " ·· " + LAST + " ·· " + YEARS.length + " years"), h, el("p", "lede", "Pick one Zimbabwean song from every year, 1980 to " + LAST + "."), how,
+    el("div", "row"), shareRow("Pick one Zimbabwean song from every year 1980–" + LAST + " and see what everyone else picked 🇿🇼", SITE));
+  hero.children[5].appendChild(linkBtn(n ? "Continue with " + nextY : "Start with " + FIRST, "accent", "#" + nextY));
+  v.appendChild(hero);
+  const decades = {};
+  YEARS.forEach(Y => (decades[Math.floor(Y.y / 10) * 10] ||= []).push(Y));
+  Object.entries(decades).forEach(([d, list]) => {
+    const sec = el("section", "decade");
+    sec.appendChild(el("h2", null, d + "s"));
+    const g = el("div", "ygrid");
+    list.forEach(Y => {
+      const p = pickOf(Y.y);
+      const a = el("a", "yt" + (p ? " done" : "")); a.href = "#" + Y.y;
+      a.append(el("b", null, Y.y), el("span", null, p ? p.t : Y.songs.length + " songs"));
+      a.setAttribute("aria-label", Y.y + (p ? ", your pick: " + p.t : ", " + Y.songs.length + " songs"));
+      g.appendChild(a);
+    });
+    sec.appendChild(g); v.appendChild(sec);
+  });
+  v.appendChild(capsule());
+}
+function capsule(){
+  const c = el("section", "capsule"); c.id = "mypicks";
+  c.appendChild(el("h2", null, "My picks"));
+  const row = el("div", "row");
+  const st = el("span", "status"); st.setAttribute("role", "status");
+  const box = el("textarea", "sharebox"); box.readOnly = true; box.hidden = true; box.setAttribute("aria-label", "Your list as text");
+  const pa = btn("▶ Play my picks", "accent", () => {
+    const list = YEARS.map(Y => pickOf(Y.y)).filter(s => s && s.v);
+    if (!list.length) { st.textContent = "Choose a song with a video first."; return; }
+    playQueue(list);
+  });
+  const cp = btn("Copy my list", "ghost", () => {
+    const txt = "Songs of the Year: Zim Edition — my picks\n" + YEARS.map(Y => { const s = pickOf(Y.y); return Y.y + ": " + (s ? s.t + " — " + s.a : "—"); }).join("\n");
+    const fb = () => { box.value = txt; box.hidden = false; box.select(); st.textContent = "Select the text below and copy it."; };
+    navigator.clipboard ? navigator.clipboard.writeText(txt).then(() => { st.textContent = "Copied."; box.hidden = true; }, fb) : fb();
+  });
+  const rs = btn("Start over", "ghost", () => {
+    if (rs.dataset.armed) { picks = {}; seen = {}; opened = {}; save(); store(LS_SEEN, seen); store(LS_OPEN, opened); route(); return; }
+    rs.dataset.armed = "1"; rs.textContent = "Tap again to clear all picks";
+  });
+  row.append(pa, cp, rs, st);
+  const done = Object.keys(picks).filter(y => pickOf(y)).length;
+  const capText = done
+    ? "I've picked my Zim songs for " + done + " years. Recent picks: " + YEARS.map(Y => pickOf(Y.y)).filter(Boolean).slice(-3).map(s => s.t + " (" + s.y + ")").join(", ") + ". Make yours:"
+    : "Pick one Zimbabwean song from every year 1980–" + LAST + ":";
+  c.append(row, box, el("h3", null, "Share with friends"), shareRow(capText, SITE),
+    el("p", "note", "Songs play through YouTube's or Spotify's own players. Percentages show how everyone who picked a song in that year voted. Votes are anonymous and you can change yours any time."));
+  return c;
+}
+
+/* ---------- Year page: card grid, songs appear on a hidden timer, blurred until tapped ---------- */
+let ticker = null;
+function stopTicker(){ if (ticker) { clearInterval(ticker); ticker = null; } }
+let muted = false;                 // songs only play when tapped, so sound can be on
+let miniCtl = null;
+function paintMute(){ const b = $("#mMute"); b.textContent = muted ? "🔇" : "🔊"; b.setAttribute("aria-label", muted ? "Turn sound on" : "Turn sound off"); b.classList.toggle("mute", muted); }
+$("#mMute").addEventListener("click", () => {
+  muted = !muted;
+  try { if (player && player.unMute) { if (muted) player.mute(); else { player.unMute(); player.playVideo(); } } } catch(e) {}
+  paintMute();
+});
+$("#mPrev").addEventListener("click", () => { if (miniCtl) miniCtl.prev(); });
+$("#mNext").addEventListener("click", () => { if (miniCtl) miniCtl.next(); });
+const fmtT = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+let seeking = false;
+const miniPlayer = () => (player && playerHost === $("#mYt") && player.getPlayerState) ? player : null;
+$("#mPlay").addEventListener("click", () => {
+  const p = miniPlayer(); if (!p) return;
+  try { const st = p.getPlayerState(); if (st === 1 || st === 3) p.pauseVideo(); else p.playVideo(); } catch(e) {}
+  setTimeout(syncMini, 150);
+});
+$("#mSeek").addEventListener("input", () => { seeking = true; $("#mCur").textContent = fmtT(+$("#mSeek").value); });
+$("#mSeek").addEventListener("change", () => { const p = miniPlayer(); if (p) { try { p.seekTo(+$("#mSeek").value, true); } catch(e) {} } seeking = false; });
+function syncMini(){
+  if (!$("#mini").classList.contains("open")) return;
+  const p = miniPlayer(), b = $("#mPlay");
+  if (!p) return;
+  let st = -1, cur = 0, dur = 0;
+  try { st = p.getPlayerState(); cur = p.getCurrentTime() || 0; dur = p.getDuration() || 0; } catch(e) {}
+  const playing = st === 1 || st === 3;
+  b.textContent = playing ? "❚❚" : "▶"; b.setAttribute("aria-label", playing ? "Pause" : "Play");
+  const s = $("#mSeek");
+  if (dur > 0) { s.max = Math.floor(dur); $("#mDur").textContent = fmtT(dur); }
+  if (!seeking) { s.value = Math.floor(cur); $("#mCur").textContent = fmtT(cur); }
+}
+setInterval(syncMini, 500);
+$("#mClose").addEventListener("click", () => { pauseVideo(); $("#mSp").textContent = ""; $("#mini").classList.remove("open"); });
+function closeMini(){ $("#mini").classList.remove("open"); miniCtl = null; }
+
+function year(y){
+  const Y = BY[y], total = Y.songs.length;
+  document.title = y + " · Songs of the Year: Zim Edition";
+  count();
+  const v = $("#view"); v.textContent = "";
+  const S = {cur: -1};
+
+  const head = el("div", "yhead");
+  const prevY = linkBtn("◂ " + (y - 1), "ghost ybtn", "#" + (y - 1)); prevY.setAttribute("aria-label", "Previous year, " + (y - 1));
+  const nextY = linkBtn((y + 1) + " ▸", "accent ybtn", "#" + (y + 1)); nextY.setAttribute("aria-label", "Next year, " + (y + 1));
+  if (y <= FIRST) prevY.setAttribute("aria-disabled", "true");
+  if (y >= LAST) nextY.setAttribute("aria-disabled", "true");
+  const ybtns = el("div", "ybtns"); ybtns.append(prevY, nextY);
+  head.append(el("h1", "yyear", y), ybtns);
+
+  const grid = el("div", "cards"); grid.setAttribute("aria-label", "Songs from " + y);
+  const pager = el("div", "pager");
+  pager.appendChild(linkBtn("◂ All years", "ghost", "#years"));
+  const rs = btn("↺ Reset " + y, "ghost", () => {
+    if (!rs.dataset.armed) { rs.dataset.armed = "1"; rs.textContent = "Tap again to reset " + y; return; }
+    delete picks[y]; delete opened[y]; save(); store(LS_OPEN, opened); count();
+    pauseVideo(); closeMini(); miniCtl = { next(){ if (S.cur < total - 1) play(S.cur + 1); }, prev(){ if (S.cur > 0) play(S.cur - 1); } };
+    S.cur = -1; delete rs.dataset.armed; rs.textContent = "↺ Reset " + y; first = true; renderGrid();
+    say(y + " has been reset. All songs are hidden again.");
+  });
+  rs.setAttribute("aria-label", "Reset " + y + ": clear your pick and hide the songs again");
+  pager.appendChild(rs);
+  pager.appendChild(y < LAST ? linkBtn("Next year: " + (y + 1) + " ▸", "accent", "#" + (y + 1)) : linkBtn("See my picks", "accent", "#mypicks"));
+  v.append(head, grid, pager, el("p", "disclaimer", DISCLAIMER));
+
+  const mini = $("#mini"), ythost = $("#mYt"), sphost = $("#mSp"), nomedia = $("#mNo");
+  paintMute();
+
+  function card(j, fresh){
+    const s = Y.songs[j], open = isOpen(y, j), mine = picks[y] === j;
+    const c = el("article", "card" + (open ? "" : " blurred") + (j === S.cur ? " current" : ""));
+    if (!fresh) c.style.animation = "none";
+    const art = el("button", "art"); art.type = "button";
+    art.setAttribute("aria-label", open ? "Play " + s.t + " by " + s.a : "Song " + (j + 1) + ", hidden. Tap to reveal and play.");
+    const pic = el("span", "pic");
+    if (s.v) { const img = el("img"); img.src = "https://i.ytimg.com/vi/" + s.v + "/hqdefault.jpg"; img.alt = ""; img.loading = "lazy"; pic.appendChild(img); }
+    else { const d = el("span", "disc"); d.appendChild(el("b", null, j + 1)); pic.appendChild(d); }
+    art.append(pic, el("span", "playic", "▶"));
+    if (!open) art.appendChild(el("span", "tapnote", "Tap to reveal"));
+    art.addEventListener("click", () => { openSong(y, j); S.cur = j; renderGrid(); play(j); });
+    const meta = el("div", "meta");
+    meta.append(el("h2", "t", s.t), el("p", "a", s.a));
+    if (open && talliesLoaded && totalVotes(y)) meta.appendChild(el("p", "pc", pct(y, j) + "% picked this"));
+    const sv = el("button", "save" + (mine ? " on" : ""), mine ? "✓ My pick" : "Pick this song"); sv.type = "button";
+    sv.setAttribute("aria-label", (mine ? "Your pick: " : "Pick ") + s.t + " as your " + y + " song");
+    sv.addEventListener("click", () => {
+      if (picks[y] === j) return;
+      castVote(y, j); picks[y] = j; save(); count();
+      say(s.t + " is your song for " + y + ".");
+      renderGrid();
+    });
+    meta.appendChild(sv);
+    c.append(art, meta);
+    return c;
+  }
+  let first = true;
+  function renderGrid(){
+    grid.textContent = "";
+    for (let j = 0; j < total; j++) grid.appendChild(card(j, first));
+    first = false;
+  }
+
+  function play(j){
+    S.cur = j; mini.classList.add("open");
+    [...grid.children].forEach((c, k) => c.classList.toggle("current", k === j));
+    const s = Y.songs[j];
+    mini.classList.toggle("blurred", !isOpen(y, j));
+    $("#mPlay").classList.toggle("hide", !s.v); $("#mSeekRow").classList.toggle("hide", !s.v); $("#mSeek").value = 0; $("#mCur").textContent = "0:00"; $("#mDur").textContent = "0:00";
+    $("#mY").textContent = y; $("#mT").textContent = isOpen(y, j) ? s.t : "Song " + (j + 1); $("#mA").textContent = isOpen(y, j) ? s.a : "Tap the card to reveal";
+    sphost.textContent = ""; sphost.classList.add("hide");
+    nomedia.textContent = ""; nomedia.classList.add("hide");
+    onEnded = null;
+    onYtError = () => { ythost.classList.add("hide"); nomedia.textContent = ""; nomedia.append(extLink("YouTube", ytSearch(s)), " · ", extLink("Spotify", spSearch(s))); nomedia.classList.remove("hide"); };
+    if (s.v) { ythost.classList.remove("hide"); mountVideo(ythost, s.v, PREVIEW_START, true, muted); }
+    else {
+      pauseVideo(); ythost.classList.add("hide");
+      if (s.sp) { sphost.appendChild(spotifyFrame(s.sp, s.t)); sphost.classList.remove("hide"); }
+      else { nomedia.append(extLink("YouTube", ytSearch(s)), " · ", extLink("Spotify", spSearch(s))); nomedia.classList.remove("hide"); }
+    }
+    say(isOpen(y, j) ? "Playing " + s.t + " by " + s.a : "Song " + (j + 1) + " is playing. Tap it to reveal.");
+  }
+
+  miniCtl = {
+    next(){ if (S.cur < total - 1) play(S.cur + 1); },
+    prev(){ if (S.cur > 0) play(S.cur - 1); }
+  };
+
+  refreshVotes = () => renderGrid();
+  renderGrid();
+}
+
+/* ---------- Routing ---------- */
+function route(){
+  const h = location.hash.slice(1);
+  const y = parseInt(h, 10);
+  stopTicker(); refreshVotes = () => {}; closeMini();
+  if (!queue) destroyPlayer();
+  if (BY[y]) {
+    if (queue) closeDock();
+    year(y); scrollTo({top: 0});
+  } else if (h === "years" || h === "mypicks") {
+    home();
+    if (h === "mypicks") { const e = document.getElementById("mypicks"); if (e) e.scrollIntoView(); }
+    else scrollTo({top: 0});
+  } else {
+    landing(); scrollTo({top: 0});
+  }
+}
+addEventListener("hashchange", route);
+route();
+loadTallies();
+setInterval(() => { if (document.visibilityState === "visible") loadTallies(); }, 60000);
+</script>
+</body>
+</html>
