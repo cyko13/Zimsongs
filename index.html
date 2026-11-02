@@ -52,6 +52,33 @@ button{font:inherit}
 .disclaimer{font-size:15px;line-height:1.5;color:var(--muted);max-width:60ch;margin:0;padding:10px 14px;border-left:3px solid var(--gold);background:var(--surface);border-radius:0 6px 6px 0}
 .pager+.disclaimer{margin-top:18px}
 
+/* Results page */
+.stats{padding-block:26px 20px;display:grid;gap:22px;grid-template-columns:minmax(0,1fr)}
+.stats>*,.sy,.bar{min-width:0}
+.stats h1.title{font-size:clamp(44px,8vw,80px)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{border:1.5px solid var(--line);border-radius:8px;background:var(--surface);padding:14px 16px;display:grid;gap:2px}
+.kpi b{font-family:var(--display);font-size:36px;line-height:1.1}
+.kpi span{font-size:15px;color:var(--muted)}
+.stats h2{font-family:var(--display);font-size:26px;margin:8px 0 0}
+.toplist{margin:0;padding-left:1.4em;display:grid;gap:6px}
+.toplist li{font-size:17px}
+.toplist small,.sy small{color:var(--muted);font-size:15px}
+.sy{border:1.5px solid var(--line);border-radius:8px;background:var(--surface);padding:0}
+.sy summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;min-height:52px}
+.sy summary::-webkit-details-marker{display:none}
+.sy summary b{font-family:var(--display);font-size:22px}
+.sy summary .lead{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sy summary .n{font-size:15px;color:var(--muted);white-space:nowrap}
+.sy .rows{padding:0 16px 14px;display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}
+.bar{display:grid;gap:3px;grid-template-columns:minmax(0,1fr)}
+.bar .lab{display:flex;justify-content:space-between;gap:10px;font-size:16px;min-width:0}
+.bar .lab span:last-child{flex:none;white-space:nowrap}
+.bar .lab span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .track{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar .fill{height:100%;background:var(--gold);border-radius:4px}
+.sy.empty summary .lead{color:var(--muted)}
+
 /* Home */
 .stripe{display:flex;height:7px;border-radius:4px;overflow:hidden;width:250px}.stripe i{flex:1}
 .stripe i:nth-child(1){background:#1f7a4c}.stripe i:nth-child(2){background:#c9982b}.stripe i:nth-child(3){background:#c0392b}.stripe i:nth-child(4){background:#1b1b1b}
@@ -452,6 +479,73 @@ function count(){
   $("#count").textContent = n + " / " + YEARS.length + " years picked";
   return n;
 }
+async function fetchAllVotes(){
+  const all = []; let offset = 0;
+  while (true) {
+    const d = await wixPost("/wix-data/v2/items/query", {dataCollectionId: "songVotes", query: {paging: {limit: 1000, offset}}, consistentRead: true});
+    const items = d.dataItems || [];
+    items.forEach(it => all.push({voter: String(it.id || "").split("_")[0], y: Math.round(it.data.year), i: Math.round(it.data.idx)}));
+    if (items.length < 1000) break;
+    offset += 1000;
+  }
+  return all;
+}
+async function statsPage(){
+  document.title = "Results · Songs of the Year: Zim Edition";
+  count();
+  const v = $("#view"); v.textContent = "";
+  const s = el("section", "stats");
+  const h = el("h1", "title"); h.append("Results ", el("em", null, "so far"));
+  const st = el("p", "status", "Loading votes…");
+  const refresh = btn("↻ Refresh", "ghost", () => statsPage());
+  const top = el("div", "row"); top.append(refresh, st);
+  s.append(h, top); v.appendChild(s);
+  let votes;
+  try { votes = await fetchAllVotes(); } catch(e) { st.textContent = "Couldn't load the votes right now. Try Refresh in a minute."; return; }
+  if (location.hash !== "#stats") return;
+  const T = {};
+  votes.forEach(x => { if (BY[x.y] && BY[x.y].songs[x.i]) ((T[x.y] ||= {})[x.i] = ((T[x.y] || {})[x.i] || 0) + 1); });
+  const valid = votes.filter(x => BY[x.y] && BY[x.y].songs[x.i]);
+  const players = new Set(valid.map(x => x.voter)).size;
+  const yearsWith = Object.keys(T).length;
+  st.textContent = "Updated " + new Date().toLocaleTimeString([], {hour: "numeric", minute: "2-digit"});
+  const k = el("div", "kpis");
+  [[valid.length, "votes"], [players, players === 1 ? "player" : "players"], [yearsWith + " / " + YEARS.length, "years with votes"]].forEach(([n, l]) => { const c = el("div", "kpi"); c.append(el("b", null, n), el("span", null, l)); k.appendChild(c); });
+  s.appendChild(k);
+  const ranked = [];
+  Object.entries(T).forEach(([y, m]) => Object.entries(m).forEach(([i, n]) => ranked.push({y: +y, i: +i, n})));
+  ranked.sort((a, b) => b.n - a.n || a.y - b.y);
+  s.appendChild(el("h2", null, "Most picked songs"));
+  if (!ranked.length) s.appendChild(el("p", "note", "No votes yet. Share the site and check back."));
+  else {
+    const ol = el("ol", "toplist");
+    ranked.slice(0, 10).forEach(r => { const so = BY[r.y].songs[r.i]; const li = el("li"); li.append(el("b", null, so.t), " – " + so.a + " ", el("small", null, "(" + r.y + ", " + r.n + (r.n === 1 ? " vote)" : " votes)"))); ol.appendChild(li); });
+    s.appendChild(ol);
+  }
+  s.appendChild(el("h2", null, "Every year"));
+  const list = el("div"); list.style.display = "grid"; list.style.gap = "8px"; list.style.gridTemplateColumns = "minmax(0,1fr)";
+  YEARS.forEach(Y => {
+    const m = T[Y.y] || {}, tot = Object.values(m).reduce((a, b) => a + b, 0);
+    const d = el("details", "sy" + (tot ? "" : " empty"));
+    const sm = el("summary");
+    const order = Y.songs.map((so, i) => ({so, i, n: m[i] || 0})).sort((a, b) => b.n - a.n || a.i - b.i);
+    const lead = tot ? order[0].so.t + " – " + order[0].so.a : "No votes yet";
+    sm.append(el("b", null, Y.y), el("span", "lead", lead), el("span", "n", tot + (tot === 1 ? " vote" : " votes")));
+    d.appendChild(sm);
+    const rows = el("div", "rows");
+    order.forEach(o => {
+      const p = tot ? Math.round(o.n * 100 / tot) : 0;
+      const b = el("div", "bar");
+      const lab = el("div", "lab"); lab.append(el("span", null, o.so.t + " – " + o.so.a), el("span", null, o.n + " · " + p + "%"));
+      const tr = el("div", "track"); const f = el("div", "fill"); f.style.width = p + "%"; tr.appendChild(f);
+      b.append(lab, tr); rows.appendChild(b);
+    });
+    d.appendChild(rows); list.appendChild(d);
+  });
+  s.appendChild(list);
+  const back = el("div", "pager"); back.appendChild(linkBtn("◂ Back to the start", "ghost", "#"));
+  s.appendChild(back);
+}
 function landing(){
   document.title = "Songs of the Year: Zim Edition";
   const v = $("#view"); v.textContent = "";
@@ -671,6 +765,8 @@ function route(){
   if (BY[y]) {
     if (queue) closeDock();
     year(y); scrollTo({top: 0});
+  } else if (h === "stats") {
+    statsPage(); scrollTo({top: 0});
   } else if (h === "years" || h === "mypicks") {
     home();
     if (h === "mypicks") { const e = document.getElementById("mypicks"); if (e) e.scrollIntoView(); }
