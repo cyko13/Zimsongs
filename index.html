@@ -132,7 +132,10 @@ h1.title em{font-style:italic;font-weight:600;color:var(--gold)}
   padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .mini.open{display:block}
 .minner{max-width:1000px;margin:0 auto;display:flex;gap:16px;align-items:center}
-.mvid{width:168px;flex:none}
+.mvid{width:356px;flex:none}
+body.playing{padding-bottom:280px}
+.mbtn.nudge{background:var(--gold);border-color:var(--gold);color:#13241d;padding:0 16px;white-space:nowrap;animation:nudge 1.4s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .mvid .ythost{aspect-ratio:16/9;width:100%;border-radius:4px;overflow:hidden;background:#000;transition:filter .4s ease}
 .mvid .ythost iframe,.mvid .ythost>div{width:100%;height:100%;display:block;border:0}
 .mvid .sphost iframe{width:100%;height:80px;border:0;border-radius:8px;display:block}
@@ -192,13 +195,20 @@ textarea.sharebox{width:100%;min-height:180px;font:inherit;font-size:16px;backgr
   .pager>*{flex:1 1 auto}
   .ygrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .minner{flex-wrap:wrap;gap:10px}
-  .mvid{width:120px}
+  .mvid{width:100%}
+  .mbtns{gap:8px;justify-content:space-between}
+  .mbtn{min-width:44px;min-height:44px;font-size:16px}
+  .mbtn.play{min-width:52px;min-height:52px}
+  .mbtn.nudge{font-size:13px;padding:0 8px}
+  .mbtns{gap:6px}
+  .minfo .mt{font-size:17px}
   .minfo .mt{font-size:17px}
   .mbtns{width:100%;justify-content:flex-end}
   body{padding-bottom:190px}
   .dock-inner{grid-template-columns:1fr auto}
   .dvid{grid-column:1 / -1;width:100%;max-height:30vh}
   body{padding-bottom:max(190px,calc(30vh + 130px))}
+  body.playing{padding-bottom:460px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -422,8 +432,20 @@ let player = null, playerHost = null, apiReady = false, pendingCreate = null, on
 window.onYouTubeIframeAPIReady = () => { apiReady = true; if (pendingCreate) { const f = pendingCreate; pendingCreate = null; f(); } };
 (() => { const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(s); })();
 let mountedId = null;
+let autoCheck = null;
+// Phones often block a song from starting with sound. If it hasn't started, start it muted and ask for a tap.
+function checkAutoplay(){
+  try {
+    if (!player || !player.getPlayerState) { autoCheck = setTimeout(checkAutoplay, 1000); return; }
+    const st = player.getPlayerState();
+    if (st === 1 || st === 3 || st === 0) return;
+    player.mute(); player.playVideo();
+    muted = true; soundNudge = true; paintMute();
+  } catch(e) {}
+}
 function mountVideo(host, id, start, auto = true, mute = false){
   mountedId = id;
+  if (auto) { clearTimeout(autoCheck); autoCheck = setTimeout(checkAutoplay, 2000); }
   if (player && playerHost === host && host.isConnected && player.loadVideoById) {
     if (auto) player.loadVideoById({videoId: id, startSeconds: start}); else player.cueVideoById({videoId: id, startSeconds: start});
     try { if (mute) player.mute(); else player.unMute(); } catch(e) {}
@@ -626,9 +648,10 @@ let ticker = null;
 function stopTicker(){ if (ticker) { clearInterval(ticker); ticker = null; } }
 let muted = false;                 // songs only play when tapped, so sound can be on
 let miniCtl = null;
-function paintMute(){ const b = $("#mMute"); b.textContent = muted ? "🔇" : "🔊"; b.setAttribute("aria-label", muted ? "Turn sound on" : "Turn sound off"); b.classList.toggle("mute", muted); }
+let soundNudge = false;
+function paintMute(){ const b = $("#mMute"); b.textContent = muted ? (soundNudge ? "🔇 Tap for sound" : "🔇") : "🔊"; b.classList.toggle("nudge", muted && soundNudge); b.setAttribute("aria-label", muted ? "Turn sound on" : "Turn sound off"); b.classList.toggle("mute", muted); }
 $("#mMute").addEventListener("click", () => {
-  muted = !muted;
+  muted = !muted; soundNudge = false;
   try { if (player && player.unMute) { if (muted) player.mute(); else { player.unMute(); player.playVideo(); } } } catch(e) {}
   paintMute();
 });
@@ -657,8 +680,8 @@ function syncMini(){
   if (!seeking) { s.value = Math.floor(cur); $("#mCur").textContent = fmtT(cur); }
 }
 setInterval(syncMini, 500);
-$("#mClose").addEventListener("click", () => { pauseVideo(); $("#mSp").textContent = ""; $("#mini").classList.remove("open"); });
-function closeMini(){ $("#mini").classList.remove("open"); miniCtl = null; }
+$("#mClose").addEventListener("click", () => { pauseVideo(); $("#mSp").textContent = ""; $("#mini").classList.remove("open"); document.body.classList.remove("playing"); });
+function closeMini(){ $("#mini").classList.remove("open"); document.body.classList.remove("playing"); miniCtl = null; }
 
 function year(y){
   const Y = BY[y], total = Y.songs.length;
@@ -728,7 +751,7 @@ function year(y){
   }
 
   function play(j){
-    S.cur = j; mini.classList.add("open");
+    S.cur = j; mini.classList.add("open"); document.body.classList.add("playing");
     [...grid.children].forEach((c, k) => c.classList.toggle("current", k === j));
     const s = Y.songs[j];
     mini.classList.toggle("blurred", !isOpen(y, j));
