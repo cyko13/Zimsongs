@@ -134,6 +134,9 @@ h1.title em{font-style:italic;font-weight:600;color:var(--gold)}
 .minner{max-width:1000px;margin:0 auto;display:flex;gap:16px;align-items:center}
 .mvid{width:356px;flex:none}
 body.playing{padding-bottom:280px}
+.mvol{display:flex;align-items:center}
+.mvol input[type=range]{width:110px;height:28px;accent-color:var(--gold);cursor:pointer;background:transparent}
+@media (hover:none) and (pointer:coarse){.mvol{display:none}}
 .mbtn.nudge{background:var(--gold);border-color:var(--gold);color:#13241d;padding:0 16px;white-space:nowrap;animation:nudge 1.4s ease-in-out infinite}
 @keyframes nudge{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .mvid .ythost{aspect-ratio:16/9;width:100%;border-radius:4px;overflow:hidden;background:#000;transition:filter .4s ease}
@@ -235,6 +238,7 @@ textarea.sharebox{width:100%;min-height:180px;font:inherit;font-size:16px;backgr
     <button type="button" class="mbtn primary play" id="mPlay" aria-label="Pause">❚❚</button>
     <button type="button" class="mbtn" id="mNext" aria-label="Next song">▶▶</button>
     <button type="button" class="mbtn" id="mMute">🔊</button>
+    <label class="mvol" title="Volume"><span class="sr">Volume</span><input type="range" id="mVol" min="0" max="100" step="1" value="100" aria-label="Volume"></label>
     <button type="button" class="mbtn" id="mClose" aria-label="Close player">✕</button>
   </div>
   </div>
@@ -448,6 +452,7 @@ function mountVideo(host, id, start, auto = true, mute = false){
   if (auto) { clearTimeout(autoCheck); autoCheck = setTimeout(checkAutoplay, 2000); }
   if (player && playerHost === host && host.isConnected && player.loadVideoById) {
     if (auto) player.loadVideoById({videoId: id, startSeconds: start}); else player.cueVideoById({videoId: id, startSeconds: start});
+    try { player.setVolume(volume); } catch(e) {}
     try { if (mute) player.mute(); else player.unMute(); } catch(e) {}
     return;
   }
@@ -457,7 +462,7 @@ function mountVideo(host, id, start, auto = true, mute = false){
   const create = () => {
     player = new YT.Player(d, {videoId: id, playerVars: {autoplay: auto ? 1 : 0, mute: mute ? 1 : 0, playsinline: 1, rel: 0, start: start | 0},
       events: {
-        onReady: e => { if (auto) e.target.playVideo(); },
+        onReady: e => { try { e.target.setVolume(volume); } catch(err) {} if (auto) e.target.playVideo(); },
         onStateChange: e => { if (e.data === YT.PlayerState.ENDED && onEnded) onEnded(); },
         onError: () => { if (onYtError) onYtError(); }
       }});
@@ -646,6 +651,7 @@ function capsule(){
 /* ---------- Year page: card grid, songs appear on a hidden timer, blurred until tapped ---------- */
 let ticker = null;
 function stopTicker(){ if (ticker) { clearInterval(ticker); ticker = null; } }
+let volume = Math.max(0, Math.min(100, +load("zimvault.vol", 100) || 0));
 let muted = false;                 // songs only play when tapped, so sound can be on
 let miniCtl = null;
 let soundNudge = false;
@@ -653,6 +659,18 @@ function paintMute(){ const b = $("#mMute"); b.textContent = muted ? (soundNudge
 $("#mMute").addEventListener("click", () => {
   muted = !muted; soundNudge = false;
   try { if (player && player.unMute) { if (muted) player.mute(); else { player.unMute(); player.playVideo(); } } } catch(e) {}
+  paintMute();
+});
+$("#mVol").value = volume;
+$("#mVol").addEventListener("input", () => {
+  volume = +$("#mVol").value; store("zimvault.vol", volume);
+  try {
+    if (player && player.setVolume) {
+      player.setVolume(volume);
+      if (volume === 0 && !muted) { muted = true; player.mute(); }
+      else if (volume > 0 && muted) { muted = false; soundNudge = false; player.unMute(); player.playVideo(); }
+    }
+  } catch(e) {}
   paintMute();
 });
 $("#mPrev").addEventListener("click", () => { if (miniCtl) miniCtl.prev(); });
