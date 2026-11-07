@@ -145,7 +145,8 @@ h1.title em{font-style:italic;font-weight:600;color:var(--gold)}
 .mini{position:fixed;left:0;right:0;bottom:0;z-index:15;display:none;background:var(--dock);color:var(--dock-fg);box-shadow:0 -8px 30px rgba(0,0,0,.25);
   padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .mini.open{display:block}
-.minner{max-width:1000px;margin:0 auto;display:flex;gap:16px;align-items:center}
+.minner{max-width:none;margin:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"vid info btns" "vid seek seek";column-gap:20px;row-gap:10px;align-items:center}
+.mvid{grid-area:vid}.minfo{grid-area:info;align-self:end}.mbtns{grid-area:btns;justify-self:end;align-self:end}.mseek{grid-area:seek;align-self:start;padding-top:6px}
 .mvid{width:356px;flex:none}
 body.playing{padding-bottom:280px}
 .mvol{display:flex;align-items:center}
@@ -167,7 +168,7 @@ body.playing{padding-bottom:280px}
 .mbtn:hover{border-color:var(--dock-fg)}
 .mbtn.primary{background:var(--dock-fg);color:var(--dock);border-color:var(--dock-fg)}
 .mbtn.play{min-width:58px;min-height:58px;font-size:20px}
-.mseek{display:flex;align-items:center;gap:10px;margin-top:6px}
+.mseek{display:flex;align-items:center;gap:12px;margin:0;min-width:0}
 .mtime{font-size:13px;font-variant-numeric:tabular-nums;opacity:.85;min-width:36px}
 .mseek input[type=range]{flex:1;min-width:0;height:28px;accent-color:var(--gold);cursor:pointer;background:transparent}
 .mbtn.mute{background:var(--gold);border-color:var(--gold);color:#13241d}
@@ -211,16 +212,16 @@ textarea.sharebox{width:100%;min-height:180px;font:inherit;font-size:16px;backgr
   .brand{font-size:20px}.count{font-size:15px}
   .pager>*{flex:1 1 auto}
   .ygrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .minner{flex-wrap:wrap;gap:10px}
+  .minner{grid-template-columns:minmax(0,1fr);grid-template-areas:"vid" "info" "seek" "btns";row-gap:8px}
   .mvid{width:100%}
-  .mbtns{gap:8px;justify-content:space-between}
+  .mbtns{gap:8px;justify-content:flex-end}
   .mbtn{min-width:44px;min-height:44px;font-size:16px}
   .mbtn.play{min-width:52px;min-height:52px}
   .mbtn.nudge{font-size:13px;padding:0 8px}
   .mbtns{gap:6px}
   .minfo .mt{font-size:17px}
   .minfo .mt{font-size:17px}
-  .mbtns{width:100%;justify-content:flex-end}
+  .mbtns{justify-self:end}
   body{padding-bottom:190px}
   .dock-inner{grid-template-columns:1fr auto}
   .dvid{grid-column:1 / -1;width:100%;max-height:30vh}
@@ -244,9 +245,8 @@ textarea.sharebox{width:100%;min-height:180px;font:inherit;font-size:16px;backgr
 <div class="mini" id="mini" aria-label="Music player">
   <div class="minner">
   <div class="mvid"><div class="ythost" id="mYt"></div><div class="sphost hide" id="mSp"></div><div class="nomedia hide" id="mNo"></div></div>
-  <div class="minfo"><span class="my" id="mY"></span><span class="mt" id="mT"></span><span class="ma" id="mA"></span>
-    <div class="mseek" id="mSeekRow"><span class="mtime" id="mCur">0:00</span><input type="range" id="mSeek" min="0" max="100" step="1" value="0" aria-label="Song position"><span class="mtime" id="mDur">0:00</span></div>
-  </div>
+  <div class="minfo"><span class="my" id="mY"></span><span class="mt" id="mT"></span><span class="ma" id="mA"></span></div>
+  <div class="mseek" id="mSeekRow"><span class="mtime" id="mCur">0:00</span><input type="range" id="mSeek" min="0" max="100" step="1" value="0" aria-label="Song position"><span class="mtime" id="mDur">0:00</span></div>
   <div class="mbtns">
     <button type="button" class="mbtn" id="mPrev" aria-label="Previous song">◀◀</button>
     <button type="button" class="mbtn primary play" id="mPlay" aria-label="Pause">❚❚</button>
