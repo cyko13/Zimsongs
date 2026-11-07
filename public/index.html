@@ -391,7 +391,13 @@ function btn(label, cls, onClick){ const b = el("button", "btn" + (cls ? " " + c
 function linkBtn(label, cls, href){ const a = el("a", "btn" + (cls ? " " + cls : ""), label); a.href = href; return a; }
 function extLink(label, href){ const a = el("a", null, label); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
 
-/* ---------- Community votes (Wix CMS, anonymous visitor token) ---------- */
+/* ---------- Community votes: Netlify function /api/votes (Wix kept as a backup copy for now) ---------- */
+const API = location.protocol.startsWith("http") ? "/api/votes" : "https://zimsongs.netlify.app/api/votes";
+async function apiSummary(){
+  const r = await fetch(API, {cache: "no-store"});
+  if (!r.ok) throw new Error("api " + r.status);
+  return r.json();
+}
 const WIX_CLIENT_ID = "7d7898b3-91f7-40eb-9bda-775a581eeae1";
 const WIX = "https://www.wixapis.com";
 const LS_TOK = "wix-visitor-" + WIX_CLIENT_ID, LS_VOTER = "zimvault.voter", LS_SYNC = "zimvault.synced";
@@ -424,6 +430,15 @@ async function wixPost(path, body){
 }
 async function loadTallies(){
   try {
+    const s = await apiSummary();
+    const t = {};
+    Object.entries(s.t || {}).forEach(([y, m]) => Object.entries(m).forEach(([i, n]) => { if (BY[y] && BY[y].songs[i]) (t[y] ||= {})[i] = n; }));
+    tallies = t; talliesLoaded = true;
+    if (!load(LS_SYNC, false)) syncOldPicks();
+    refreshVotes();
+    return;
+  } catch(e) {}
+  try {
     const d = await wixPost("/wix-data/v2/items/aggregate", {dataCollectionId: "songVotes", aggregation: {groupingFields: ["year", "idx"], operations: [{resultFieldName: "n", itemCount: {}}]}, paging: {limit: 1000}, consistentRead: true});
     const t = {};
     (d.results || []).forEach(r => { const y = Math.round(r.year), i = Math.round(r.idx); if (BY[y] && BY[y].songs[i]) (t[y] ||= {})[i] = Math.round(r.n); });
@@ -433,6 +448,11 @@ async function loadTallies(){
   } catch(e) {}
 }
 function sendVote(y, i){
+  const net = fetch(API, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({voter, year: +y, idx: i}), keepalive: true}).catch(() => {});
+  wixPost("/wix-data/v2/items/save", {dataCollectionId: "songVotes", dataItem: {id: voter + "_" + y, data: {year: +y, idx: i}}}).catch(() => {});
+  return net;
+}
+function sendVoteWixOnly(y, i){
   return wixPost("/wix-data/v2/items/save", {dataCollectionId: "songVotes", dataItem: {id: voter + "_" + y, data: {year: +y, idx: i}}}).catch(() => {});
 }
 async function syncOldPicks(){
@@ -567,17 +587,22 @@ async function statsPage(){
   const refresh = btn("↻ Refresh", "ghost", () => statsPage());
   const top = el("div", "row"); top.append(refresh, st);
   s.append(h, top); v.appendChild(s);
-  let votes;
-  try { votes = await fetchAllVotes(); } catch(e) { st.textContent = "Couldn't load the votes right now. Try Refresh in a minute."; return; }
+  let T = {}, players = 0, validCount = 0;
+  try {
+    const s = await apiSummary();
+    Object.entries(s.t || {}).forEach(([y, m]) => Object.entries(m).forEach(([i, n]) => { if (BY[y] && BY[y].songs[i]) { (T[y] ||= {})[i] = n; validCount += n; } }));
+    players = s.voters || 0;
+  } catch(e) {
+    let votes;
+    try { votes = await fetchAllVotes(); } catch(e2) { st.textContent = "Couldn't load the votes right now. Try Refresh in a minute."; return; }
+    votes.forEach(x => { if (BY[x.y] && BY[x.y].songs[x.i]) { (T[x.y] ||= {})[x.i] = ((T[x.y] || {})[x.i] || 0) + 1; validCount++; } });
+    players = new Set(votes.filter(x => BY[x.y] && BY[x.y].songs[x.i]).map(x => x.voter)).size;
+  }
   if (location.hash !== "#stats") return;
-  const T = {};
-  votes.forEach(x => { if (BY[x.y] && BY[x.y].songs[x.i]) ((T[x.y] ||= {})[x.i] = ((T[x.y] || {})[x.i] || 0) + 1); });
-  const valid = votes.filter(x => BY[x.y] && BY[x.y].songs[x.i]);
-  const players = new Set(valid.map(x => x.voter)).size;
   const yearsWith = Object.keys(T).length;
   st.textContent = "Updated " + new Date().toLocaleTimeString([], {hour: "numeric", minute: "2-digit"});
   const k = el("div", "kpis");
-  [[valid.length, "votes"], [players, players === 1 ? "player" : "players"], [yearsWith + " / " + YEARS.length, "years with votes"]].forEach(([n, l]) => { const c = el("div", "kpi"); c.append(el("b", null, n), el("span", null, l)); k.appendChild(c); });
+  [[validCount, "votes"], [players, players === 1 ? "player" : "players"], [yearsWith + " / " + YEARS.length, "years with votes"]].forEach(([n, l]) => { const c = el("div", "kpi"); c.append(el("b", null, n), el("span", null, l)); k.appendChild(c); });
   s.appendChild(k);
   const ranked = [];
   Object.entries(T).forEach(([y, m]) => Object.entries(m).forEach(([i, n]) => ranked.push({y: +y, i: +i, n})));
