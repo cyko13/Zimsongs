@@ -59,11 +59,11 @@ button{font:inherit}
 
 /* Start page */
 .start{min-height:calc(100svh - 90px);display:grid;grid-template-rows:1fr auto;padding-block:24px 18px}
-.start .center{align-self:center;display:grid;justify-items:start;gap:14px}
+.start .center{align-self:center;display:grid;justify-items:center;text-align:center;gap:14px}
 .start .kicker{font-family:var(--display);font-weight:600;font-size:clamp(22px,3.4vw,34px);letter-spacing:.01em;margin:0;color:var(--fg)}
 .start h1.title{font-size:clamp(64px,15vw,168px);line-height:.92;margin:0;font-style:italic;color:var(--gold)}
-.start .btn.big{margin-top:22px}
-.start .disclaimer{align-self:end;margin-top:36px}
+.start .btn.big{margin-top:26px;min-height:84px;min-width:min(320px,100%);padding:20px 64px;font-size:32px;border-radius:12px}
+.start .disclaimer{align-self:end;justify-self:center;margin-top:36px}
 body.is-start .top{display:none}
 body.is-start .start{min-height:100svh}
 .start .lede{font-size:clamp(19px,2.4vw,24px)}
